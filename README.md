@@ -1,5 +1,13 @@
 # Book Package App
 
+This project is described in some detail in `DesignSpec.md`. 
+
+The main requirement is documented in [Issue #2](https://github.com/unfoldingWord/book-package-app/issues/2). In addition, from [Issue #3](https://github.com/unfoldingWord/book-package-app/issues/3), there is a feature called *Book Package Flow Optimization*. This allows the user to indicate which parts of a book package are completed. This indicates that the UI needs to permit two essential functions:
+
+- specifying the books to be included in the package, and
+- of those specified, which are completed.
+
+NOTE: the books marked completed may not actually be completed. This will be true when doing 'what if' studies. Thus there is no verification to be done on books marked as completed.
 
 
 # Standard README from Create React Template
