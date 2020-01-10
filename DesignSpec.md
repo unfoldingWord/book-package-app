@@ -44,18 +44,20 @@ NOTE: the term "database" is used below and it refers to `indexedDB` using the `
 1. A list of books with checkboxes are presented to the user.
 1. The user selects one or more books.
 1. The user clicks the `Next` button.
-1. The Gitea `trees` API is used against the Greek and Hebrew original language repos, as needed.
-1. The SHA for each book is extracted from `trees` and the database is queried by the SHA. If it exists, then we already have the book. Otherwise the book is fetched and the statistics generated and stored with the book's JSON in the database. A timestamp is also added to the book's JSON. The timestamp will enable a database *tidy* operation to remove superseded data.
-1. Once all the data is present and counted, the data is read and grand totals are generated
-1. The UI is built with grand totals first; then per-book details.
-1. Each detailed view will have a collapsible section containing per-chapter details.
+1. The user selections are passed to the book-package-rcl for processing and presentation
 
 The above completes the logic needed for the first release, which does not include the book package optimization feature.
 
+### Overview of the Linked Resources
 
+The resource linkages for a book package begin with the original languages. Given a book, say Titus, the Greek text in USFM format is fetched and converted to JSON format. 
+- The Strong's numbers exist for each word and there is a document for each Strong's number. Each document can be fetched and the words counted.
+- The text also contains references to Translation Words and each refers to a document that can be fetched and counted.
+
+The other resources are organized by books of the Bible and therefore can be fetched directly based on user input.
 
 ### Data Design
 
 The books of the Bible from which the user selects is found in `core/books.json`. Many functions to process and query this data are found in `core/books.js`.
 
-Each book is stored in the database as an object, which can be augmented with other properties during processing.
+Each book and document is stored in the database as an object, which can be augmented with other properties during processing.
