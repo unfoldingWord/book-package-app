@@ -1,11 +1,17 @@
 {
   "name": "book-package-app",
   "version": "0.1.0",
+  "license": "MIT",
+  "description": "A React Application Book Packages.",
+  "homepage": "https://unfoldingword.github.io/book-package-app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unfoldingword/book-package-app"
+  },
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.5.1",
     "@material-ui/icons": "^4.5.1",
-    "cypress": "3.8.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -13,17 +19,20 @@
     "@types/node": "^13.5.2",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
+    "book-package-rcl": "^1.0.7",
+    "cypress": "3.8.1",
+    "gh-pages": "^2.2.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.0",
-    "typescript": "^3.7.5",
-    "book-package-rcl": "^1.0.7"
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"

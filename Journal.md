@@ -15,6 +15,32 @@ and the beta v2 playground: https://www.typescriptlang.org/v2/en/play
 
 Today, spent time working on unresolved ".json" files. Had to go back and make quite a few small changes to the RCL.
 
+Added this line to scripts section of `package.json`: `    "deploy": "gh-pages -d build"`. Then:
+```
+$ yarn deploy
+yarn run v1.21.1
+$ gh-pages -d build
+ENOENT: no such file or directory, stat 'C:\Users\mando\Projects\unfoldingWord\book-package-app\build'
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+mando@DESKTOP-0V8P6MM MINGW64 ~/Projects/unfoldingWord/book-package-app (master)
+$
+```
+
+Maybe do build first? Yes... that seems to work:
+```
+$ yarn deploy
+yarn run v1.21.1
+$ gh-pages -d build
+Published
+Done in 30.52s.
+```
+
+Still having trouble; the URL returns 404. 
+https://unfoldingword.github.io/book-package-app/
+
+Rerun of `yarn build` and `yarn deploy` did not help...
 
 ## 2020-01-30
 
