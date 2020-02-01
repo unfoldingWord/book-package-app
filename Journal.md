@@ -9,7 +9,7 @@
 - *Playground*: https://www.typescriptlang.org/play/index.html#
 and the beta v2 playground: https://www.typescriptlang.org/v2/en/play
 - *React Cheatsheets*: https://github.com/typescript-cheatsheets/react-typescript-cheatsheet#reacttypescript-cheatsheets
-- *Netlify*: https://app.netlify.com/teams/unfoldingword-hvaaits/sites
+- *Netlify*: https://app.netlify.com/teams/unfoldingword-hvaaits/sites https://app.netlify.com/teams/mandolyte/sites
 
 ## 2020-01-31
 
