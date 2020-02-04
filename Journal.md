@@ -15,6 +15,12 @@ and the beta v2 playground: https://www.typescriptlang.org/v2/en/play
 
 Found solution to track two dimensions for a single book (array of booleans). Also added text about what will happen if one wants to optimize the flow.
 
+*NOTE*: updated `package.json` with:
+```
+    "deploy": "react-scripts build && gh-pages -d build"
+```
+This is needed because unless the `build` folder is updated, the commit/push to the `gh-pages` branch will not find anything to udpate and does nothing.
+
 ## 2020-02-03
 
 Need to fix/think about how properly output the book package results so the user can mark some of them as being completed. This impacts how optimization is done.
