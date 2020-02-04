@@ -11,36 +11,16 @@ and the beta v2 playground: https://www.typescriptlang.org/v2/en/play
 - *React Cheatsheets*: https://github.com/typescript-cheatsheets/react-typescript-cheatsheet#reacttypescript-cheatsheets
 - *Netlify*: https://app.netlify.com/teams/unfoldingword-hvaaits/sites
 
+## 2020-02-03
+
+Todo: need to fix/think about how properly output the book package results so the user can mark some of them as being completed. This impacts how optimization is done.
+
 ## 2020-01-31
 
-Today, spent time working on unresolved ".json" files. Had to go back and make quite a few small changes to the RCL.
+Today, spent time working on unresolved ".json" files. Had to go back and make quite a few small changes to the RCL. Never did figure this out. It appears that JSON files cannot be exported and exposed in an NPM package.
 
-Added this line to scripts section of `package.json`: `    "deploy": "gh-pages -d build"`. Then:
-```
-$ yarn deploy
-yarn run v1.21.1
-$ gh-pages -d build
-ENOENT: no such file or directory, stat 'C:\Users\mando\Projects\unfoldingWord\book-package-app\build'
-error Command failed with exit code 1.
-info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+First cut of app completed... needs cleanup and some bug fixes.
 
-mando@DESKTOP-0V8P6MM MINGW64 ~/Projects/unfoldingWord/book-package-app (master)
-$
-```
-
-Maybe do build first? Yes... that seems to work:
-```
-$ yarn deploy
-yarn run v1.21.1
-$ gh-pages -d build
-Published
-Done in 30.52s.
-```
-
-Still having trouble; the URL returns 404. 
-https://unfoldingword.github.io/book-package-app/
-
-Rerun of `yarn build` and `yarn deploy` did not help...
 
 ## 2020-01-30
 

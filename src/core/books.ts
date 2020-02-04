@@ -42,9 +42,9 @@ export const bookDataTitles = () => {
 }
 
 export const titlesToBoolean = () => {
-  let ob: {[title: string]: boolean} = {};
+  let ob: {[title: string]: boolean[] } = {};
   let list = bookDataTitles();
-  list.forEach((v,k) => {ob[v]=false});
+  list.forEach((v,k) => {ob[v]= [false,false]});
   return ob;
 }
 
@@ -54,4 +54,5 @@ export const bookIdByTitle = (title: string) => {
       return data[i].id;
     }
   }
+  return "";
 }

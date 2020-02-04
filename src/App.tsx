@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -12,8 +12,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 
+import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 
@@ -35,6 +36,28 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+const GreenCheckbox = withStyles({
+  root: {
+    color: green[400],
+    '&$checked': {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+
+function joinBookIds(state: { [x: string]: boolean[] } ) {
+  const x = Object.keys(state);
+  let y: string[] = [];
+  for (let i=0; i<x.length; i++) {
+    if ( state[x[i]][0] ) {
+      y.push(books.bookIdByTitle(x[i]));
+    }
+  }
+  return y.join();
+}
+  
+    
 function getSteps() {
   return ['Select Books', 'Book Package Results', 'Optimized Flow'];
 }
@@ -42,9 +65,9 @@ function getSteps() {
 function getStepContent(step: number) {
   switch (step) {
     case 0:
-      return 'Select books to include in package';
+      return 'Select books, then click Next to generate book package results';
     case 1:
-      return 'Optimize Book Package Flow';
+      return 'Select any books completed, then click Next to optimize book package flow';
     case 2:
       return 'Finished';
     default:
@@ -59,7 +82,7 @@ export default function HorizontalLinearStepper() {
   const steps = getSteps();
 
   const isStepOptional = (step: number) => {
-    return step === 1;
+    return false;
   };
 
   const isStepSkipped = (step: number) => {
@@ -101,15 +124,22 @@ export default function HorizontalLinearStepper() {
   };
 
   /* Form/checkbox stuff */
-  const [state, setState] = React.useState({ ...books.titlesToBoolean() });
 
+  // these are for the initial book seletion
+  const [state, setState] = React.useState({ ...books.titlesToBoolean() }); 
   const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleChange():",name)
-    console.log("state is:",{...state, [name]: event.target.checked})
-    setState({ ...state, [name]: event.target.checked });
+    let b: boolean[] = [];
+    b[0] = event.target.checked;
+    b[1] = false;
+    setState({ ...state, [name]: b });
   };
 
-  
+  const handleFinishedChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    let b: boolean[] = [];
+    b[0] = true;
+    b[1] = event.target.checked;
+    setState({ ...state, [name]: b });
+  };
 
   return (
     <div className={classes.root}>
@@ -134,7 +164,7 @@ export default function HorizontalLinearStepper() {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
+              Optimized Book Package Flow
             </Typography>
             <Button onClick={handleReset} className={classes.button}>
               Reset
@@ -143,8 +173,29 @@ export default function HorizontalLinearStepper() {
         ) : (
           <div>
             <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+            {(activeStep === 1 ) && (
+                <div>
+                  <FormControl required component="fieldset" className={classes.formControl}>
+                  <FormLabel component="legend">Select one or more</FormLabel>
+                  <FormGroup>
+                    <div>
+                      {Object.keys(state)
+                        .filter(function(book) {
+                          return state[book][0];
+                        }).map(t => (
+                          <FormControlLabel
+                          control={<GreenCheckbox checked={state[t][1]} onChange={handleFinishedChange(t)} value={t} />}
+                          label={t}
+                        />
+                      ))}
+                    </div>                
+                  </FormGroup>
+                  <FormHelperText />
+                  </FormControl>
+                </div>
+              )}
             <div>
-              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+              <Button disabled={activeStep === 0} onClick={handleBack} color="primary" className={classes.button}>
                 Back
               </Button>
               {isStepOptional(activeStep) && (
@@ -157,14 +208,24 @@ export default function HorizontalLinearStepper() {
                   Skip
                 </Button>
               )}
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                className={classes.button}
-              >
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </Button>
+
+              {activeStep < 2 && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  className={classes.button}
+                >
+                  Next
+                </Button>
+              )}
+
+              {activeStep === 2 && (
+                <Button onClick={handleReset} color="primary" className={classes.button}>
+                Reset
+                </Button>
+              )}
+
 
 
               {(activeStep === 0) && (
@@ -173,31 +234,57 @@ export default function HorizontalLinearStepper() {
                 <FormGroup>
                   {books.bookDataTitles().map(t => 
                     <FormControlLabel
-                      control={<Checkbox checked={state[t]} onChange={handleChange(t)} value={t} />}
+                      control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
                       label={t}
                     />
                   )}                
                 </FormGroup>
-                <FormHelperText>You can display an error</FormHelperText>
+                <FormHelperText />
                 </FormControl>
               )}
 
 
               {(activeStep === 1) && (
-                Object.keys(state).filter(function(book) {
-                  return state[book];
-                }).map(t => 
-                  <div>
-                    <Paper>
-                    <BookPackageRollup bookId={books.bookIdByTitle(t)} chapter='' />
-                    </Paper>
-                  </div>
-                )             
-
+                <div>
+                  <Paper>
+                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' />
+                  </Paper>
+                </div>
               )}
 
 
+              {(activeStep === 2) && (
+                <div>
+                  <div>
+                  <Typography className={classes.instructions}>
+                    Now we *optimize* the Book Package Flow. <br />
+                    The following books will be optimized:
+                  </Typography>
+                  </div>
+                  <div>
+                    {Object.keys(state)
+                        .filter(function(book) {
+                          return state[book][0];
+                        }).map(t => (
+                          <Typography>{t}</Typography>
+                      ))}
+                  </div>
 
+                  <div>
+                  <Typography className={classes.instructions}>
+                    Where the following books may be completed:
+                  </Typography>
+                  </div>
+                  <div>
+                    {Object.keys(state)
+                        .filter(function(book) {
+                          return state[book][1];
+                        }).map(t => (
+                          <Typography>{t}</Typography>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -205,3 +292,20 @@ export default function HorizontalLinearStepper() {
     </div>
   );
 }
+
+
+/* graveyard
+                  <FormGroup>
+                    <div>
+                      {Object.keys(state)
+                        .filter(function(book) {
+                          return state[book];
+                        }).map(t => (
+                          <FormControlLabel
+                          control={<GreenCheckbox checked={state[t]} onChange={handleChange(t)} value={t} />}
+                          label={t}
+                        />
+                      ))}
+                    </div>                
+                  </FormGroup>
+*/
