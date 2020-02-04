@@ -11,9 +11,13 @@ and the beta v2 playground: https://www.typescriptlang.org/v2/en/play
 - *React Cheatsheets*: https://github.com/typescript-cheatsheets/react-typescript-cheatsheet#reacttypescript-cheatsheets
 - *Netlify*: https://app.netlify.com/teams/unfoldingword-hvaaits/sites https://app.netlify.com/teams/mandolyte/sites
 
+## 2020-02-04
+
+Found solution to track two dimensions for a single book (array of booleans). Also added text about what will happen if one wants to optimize the flow.
+
 ## 2020-02-03
 
-Todo: need to fix/think about how properly output the book package results so the user can mark some of them as being completed. This impacts how optimization is done.
+Need to fix/think about how properly output the book package results so the user can mark some of them as being completed. This impacts how optimization is done.
 
 ## 2020-01-31
 
