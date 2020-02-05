@@ -90,7 +90,7 @@ Then articles and their counts are removed from both `1JN` and `3JN`. After this
 
 This means that `3JN` should be the second book, leaving `1JN` for the last book to do.
 
-
+Once both `2JN` and `3JN` are completed, `1JN` will have 40581 words (down from 61135).
 
 
 ### Overview of the Linked Resources
