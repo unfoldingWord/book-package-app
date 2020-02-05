@@ -73,7 +73,22 @@ Finally, the results may be displayed. The books are shown in the order added, w
 - The bookId, title, total word count, associated articles first used by this book.
 - For each article, also show the other books that reference it.
 
-**Example**
+**Example based on the Letters of John**
+
+Assume that no books are selected as being completed. See spreadsheet `Book Package Optimization Example.xlsx` for article data used.
+
+1. `1JN` has a total of 61135 words.
+2. `2JN` has a total of 20668 words.
+3. `3JN` has a total of 22903 words.
+
+This means that `2JN` is the optimal book to do first.
+
+Then articles and their counts are removed from both `1JN` and `3JN`. After this, their respective total word counts are:
+
+1. `3JN` has a total of 13328 words (down from 22903).
+2. `1JN` has a total of 46474 words (down from 61135).
+
+This means that `3JN` should be the second book, leaving `1JN` for the last book to do.
 
 
 
