@@ -17,6 +17,7 @@ import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
+import * as opt from '../src/core/optimize';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,7 +47,7 @@ const GreenCheckbox = withStyles({
   checked: {},
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
-function joinBookIds(state: { [x: string]: boolean[] } ) {
+function joinBookIds(state: opt.bpStateIF ) {
   const x = Object.keys(state);
   let y: string[] = [];
   for (let i=0; i<x.length; i++) {
@@ -247,44 +248,13 @@ export default function HorizontalLinearStepper() {
               {(activeStep === 1) && (
                 <div>
                   <Paper>
-                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' />
+                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={false} />
                   </Paper>
                 </div>
               )}
 
 
-              {(activeStep === 2) && (
-                <div>
-                  <div>
-                  <Typography className={classes.instructions}>
-                    Now we *optimize* the Book Package Flow. <br />
-                    The following books will be optimized:
-                  </Typography>
-                  </div>
-                  <div>
-                    {Object.keys(state)
-                        .filter(function(book) {
-                          return state[book][0];
-                        }).map(t => (
-                          <Typography>{t}</Typography>
-                      ))}
-                  </div>
-
-                  <div>
-                  <Typography className={classes.instructions}>
-                    Where the following books may be completed:
-                  </Typography>
-                  </div>
-                  <div>
-                    {Object.keys(state)
-                        .filter(function(book) {
-                          return state[book][1];
-                        }).map(t => (
-                          <Typography>{t}</Typography>
-                      ))}
-                  </div>
-                </div>
-              )}
+              {(activeStep === 2) && opt.optimize(state) }
             </div>
           </div>
         )}
