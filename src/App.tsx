@@ -264,18 +264,3 @@ export default function HorizontalLinearStepper() {
 }
 
 
-/* graveyard
-                  <FormGroup>
-                    <div>
-                      {Object.keys(state)
-                        .filter(function(book) {
-                          return state[book];
-                        }).map(t => (
-                          <FormControlLabel
-                          control={<GreenCheckbox checked={state[t]} onChange={handleChange(t)} value={t} />}
-                          label={t}
-                        />
-                      ))}
-                    </div>                
-                  </FormGroup>
-*/

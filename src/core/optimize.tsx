@@ -3,7 +3,9 @@ import Typography from '@material-ui/core/Typography';
 
 export interface bpStateIF { [x: string]: boolean[]; };
   
-const resourcePrefixes = ['uta', 'utw', 'ult','ust', 'utq', 'utn']
+const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
+
+interface bookTotal { [bookId: string]: number}
 
 export function optimize(state: bpStateIF ) {
     // extract the books in the package
@@ -13,9 +15,13 @@ export function optimize(state: bpStateIF ) {
     // extract the books to be optimized
     const booksOpt  = books.filter( function(book) { return state[book][1] } );
 
-    // count words in each book and see which has least.
-    for (let res of resourcePrefixes) {
-
+    // count words in each book to be optimized and see which has least.
+    let bookcounts: bookTotal[] = [];
+    for (let bkid of booksOpt) {
+        console.log("Working on:", bkid)
+        for (let res of resourcePrefixes) {
+            console.log(".. resource:",res)
+        }    
     }
 
     return (
