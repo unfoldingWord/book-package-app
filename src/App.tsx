@@ -142,6 +142,30 @@ export default function HorizontalLinearStepper() {
     setState({ ...state, [name]: b });
   };
 
+  const [_opt, setOpt] = React.useState(<div>Waiting-Optimize</div>);
+  React.useEffect( () => {
+    const fetchData = async () => {
+      let result;
+      try {
+        result = await opt.optimize(state);
+        setOpt(result);  
+      } catch (error) {
+        setOpt(
+          <div>
+            {error.message}
+          </div>
+        )
+        return;
+      }
+    };
+    if (activeStep !== 2) {return;}
+    fetchData();
+  }, [state,activeStep]); 
+  // the parameter [] allows the effect to skip if value unchanged
+  // an empty [] will only update on mount of component
+  
+
+
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep}>
@@ -248,13 +272,17 @@ export default function HorizontalLinearStepper() {
               {(activeStep === 1) && (
                 <div>
                   <Paper>
-                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={false} />
+                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={true} />
                   </Paper>
                 </div>
               )}
 
 
-              {(activeStep === 2) && opt.optimize(state) }
+              {(activeStep === 2) && (
+                <div>
+                  {_opt}
+                </div>
+              )}
             </div>
           </div>
         )}
