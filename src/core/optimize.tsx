@@ -52,7 +52,8 @@ export async function optimize(state: bpStateIF ) {
                     <Typography key={t}>{t}</Typography>
                 ))}
             </div>
-
+            <br/>
+            <br/>
             <div>
                 <Typography >
                 Where the following books may be completed:
@@ -63,13 +64,15 @@ export async function optimize(state: bpStateIF ) {
                     <Typography key={t}>{t}</Typography>
                 ))}
             </div>
-
+            <br/>
+            <br/>
             <div>
                 {bklist.map(t => (
                     <Typography key={t}>Book {t} has word total of {bookcounts.get(t)}</Typography>
                 ) )}
             </div>
-
+            <br/>
+            <br/>
             <div>
                 <Typography >
                 Note that counts above do NOT sum to the book package total since UTA and UTW are not deduped.
