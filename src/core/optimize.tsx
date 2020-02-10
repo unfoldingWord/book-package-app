@@ -10,15 +10,15 @@ const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
 export async function optimize(state: bpStateIF ) {
     // extract the books in the package
     const allbooks = Object.keys(state);
-    // extract the books that are done first (if any)
-    const booksDone = allbooks.filter( function(book) { return state[book][0] } );
+    // extract the book package
+    const bookpkg    = allbooks.filter( function(book) { return state[book][0] } );
+    console.log("bookpkg:",bookpkg);
+    // extract the books that are done/completed first (if any)
+    const booksDone  = bookpkg.filter( function(book) { return state[book][1] } );
     console.log("booksDone:",booksDone);
-    // extract the books to be optimized
-    const booksOpt  = allbooks.filter( function(book) { return state[book][1] } );
+    // books to be optimized
+    const booksOpt   = bookpkg.filter( function(book) { return !booksDone.includes(book) } );
     console.log("booksOpt:",booksOpt);
-    // books in package
-    const bookpkg: string[] = booksDone;
-    bookpkg.push(...booksOpt);
 
     // count words in each book to be optimized and see which has least.
     let bookcounts = new Map<string,number>();
@@ -49,7 +49,7 @@ export async function optimize(state: bpStateIF ) {
             </div>
             <div>
                 {booksOpt.map(t => (
-                    <Typography>{t}</Typography>
+                    <Typography key={t}>{t}</Typography>
                 ))}
             </div>
 
@@ -60,13 +60,13 @@ export async function optimize(state: bpStateIF ) {
                 </div>
                 <div>
                 {booksDone.map(t => (
-                    <Typography>{t}</Typography>
+                    <Typography key={t}>{t}</Typography>
                 ))}
             </div>
 
             <div>
                 {bklist.map(t => (
-                    <Typography>Book {t} has word total of {bookcounts.get(t)}</Typography>
+                    <Typography key={t}>Book {t} has word total of {bookcounts.get(t)}</Typography>
                 ) )}
             </div>
 

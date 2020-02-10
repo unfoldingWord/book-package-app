@@ -14,6 +14,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 
+import Switch from '@material-ui/core/Switch';
+
 import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
@@ -76,6 +78,8 @@ function getStepContent(step: number) {
   }
 }
 
+
+
 export default function HorizontalLinearStepper() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -123,6 +127,16 @@ export default function HorizontalLinearStepper() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  /* Switch stuff */
+  const [clearF, setClearF] = React.useState({
+    clearFlag: false,
+  });
+
+  const handleChangeClearFlag = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClearF({ ...clearF, [name]: event.target.checked });
+  };
+
 
   /* Form/checkbox stuff */
 
@@ -197,6 +211,14 @@ export default function HorizontalLinearStepper() {
           </div>
         ) : (
           <div>
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Switch checked={clearF.clearFlag} onChange={handleChangeClearFlag('clearFlag')} value="clearFlag" color="primary" />
+                }
+                label="Refresh Book Package Data"
+              />
+            </FormGroup>
             <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
             {(activeStep === 1 ) && (
                 <div>
@@ -260,7 +282,7 @@ export default function HorizontalLinearStepper() {
                   {books.bookDataTitles().map(t => 
                     <FormControlLabel
                       control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
-                      label={t}
+                      label={t} key={t}
                     />
                   )}                
                 </FormGroup>
@@ -272,7 +294,7 @@ export default function HorizontalLinearStepper() {
               {(activeStep === 1) && (
                 <div>
                   <Paper>
-                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={true} />
+                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={clearF.clearFlag} />
                   </Paper>
                 </div>
               )}

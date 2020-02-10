@@ -19,7 +19,7 @@
     "@types/node": "^13.5.2",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
-    "book-package-rcl": "^1.0.11",
+    "book-package-rcl": "^1.1.0",
     "cypress": "3.8.1",
     "gh-pages": "^2.2.0",
     "localforage": "^1.7.3",
