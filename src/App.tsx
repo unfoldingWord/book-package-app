@@ -205,7 +205,7 @@ export default function HorizontalLinearStepper() {
             <Typography className={classes.instructions}>
               Optimized Book Package Flow
             </Typography>
-            <Button onClick={handleReset} className={classes.button}>
+            <Button onClick={handleReset} className={classes.button} variant="contained" color="primary" >
               Reset
             </Button>
           </div>
@@ -231,7 +231,7 @@ export default function HorizontalLinearStepper() {
                           return state[book][0];
                         }).map(t => (
                           <FormControlLabel
-                          control={<GreenCheckbox checked={state[t][1]} onChange={handleFinishedChange(t)} value={t} />}
+                          control={<GreenCheckbox checked={state[t][1]} onChange={handleFinishedChange(t)} value={t} key={t} />}
                           label={t}
                         />
                       ))}
@@ -242,7 +242,7 @@ export default function HorizontalLinearStepper() {
                 </div>
               )}
             <div>
-              <Button disabled={activeStep === 0} onClick={handleBack} color="primary" className={classes.button}>
+              <Button disabled={activeStep === 0} onClick={handleBack} color="primary" variant="contained" className={classes.button}>
                 Back
               </Button>
               {isStepOptional(activeStep) && (
@@ -268,7 +268,7 @@ export default function HorizontalLinearStepper() {
               )}
 
               {activeStep === 2 && (
-                <Button onClick={handleReset} color="primary" className={classes.button}>
+                <Button onClick={handleReset} color="primary" variant="contained" className={classes.button}>
                 Reset
                 </Button>
               )}
