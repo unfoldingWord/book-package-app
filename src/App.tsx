@@ -126,6 +126,11 @@ export default function HorizontalLinearStepper() {
 
   const handleReset = () => {
     setActiveStep(0);
+    let states = Object.keys(state);
+    for( let i=0; i < states.length; i++) {
+      state[states[i]][0] = false;
+      state[states[i]][1] = false;
+    }
   };
 
   /* Switch stuff */
