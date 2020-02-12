@@ -164,10 +164,8 @@ export default function HorizontalLinearStepper() {
   const [_opt, setOpt] = React.useState(<div>Waiting-Optimize</div>);
   React.useEffect( () => {
     const fetchData = async () => {
-      let result;
       try {
-        result = await opt.optimize(state);
-        setOpt(result);  
+        await opt.optimize(state, setOpt);
       } catch (error) {
         setOpt(
           <div>

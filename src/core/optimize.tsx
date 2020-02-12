@@ -7,7 +7,8 @@ export interface bpStateIF { [x: string]: boolean[]; };
   
 const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
 
-export async function optimize(state: bpStateIF ) {
+export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.SetStateAction<JSX.Element>> ) {
+    setOpt(<div>Waiting for optimization to complete</div>);
     // extract the books in the package
     const allbooks = Object.keys(state);
     // extract the book package
@@ -269,7 +270,7 @@ export async function optimize(state: bpStateIF ) {
             doneArticleMap.set(articles[j], articleCount);
         }
     }
-    return (
+    setOpt (
         <div>
             <div>
                 <Typography >
