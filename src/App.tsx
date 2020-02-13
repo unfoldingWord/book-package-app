@@ -63,17 +63,19 @@ function joinBookIds(state: opt.bpStateIF ) {
   
     
 function getSteps() {
-  return ['Select Books', 'Book Package Details', 'Optimized Flow'];
+  return ['Select Books', 'Book Package Details', 'Configure Book Package Flow', 'Optimized Flow'];
 }
 
 function getStepContent(step: number) {
   switch (step) {
     case 0:
-      return 'Select books, then click Next to generate book package results';
+      return 'Select books, then click Next to generate book package details';
     case 1:
-      return 'Select any books completed, then click Next to optimize book package flow';
+      return 'Click Next to configure book book package flow optimization';
     case 2:
-      return 'Finished';
+      return 'Select any books completed, then click Next to optimize book package flow';
+    case 3:
+      return 'Optimized Book Package Flow';
     default:
       return 'Unknown step';
   }
@@ -134,7 +136,7 @@ export default function HorizontalLinearStepper() {
     }
   };
 
-  /* Switch stuff */
+  /* Data refresh switch */
   const [clearF, setClearF] = React.useState({
     clearFlag: false,
   });
@@ -206,114 +208,93 @@ export default function HorizontalLinearStepper() {
       <CssBaseline />
       <Container maxWidth="sm">
       <div>
-        {activeStep === steps.length ? (
+        <div>
+          <FormGroup row>
+            <FormControlLabel
+              control={
+                <Switch checked={clearF.clearFlag} onChange={handleChangeClearFlag('clearFlag')} value="clearFlag" color="primary" />
+              }
+              label="Refresh Book Package Data"
+            />
+          </FormGroup>
+          <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
           <div>
-            <Typography className={classes.instructions}>
-              Optimized Book Package Flow
-            </Typography>
-            <Button onClick={handleReset} className={classes.button} variant="contained" color="primary" >
-              Reset
+            <Button disabled={activeStep === 0} onClick={handleBack} color="primary" variant="contained" className={classes.button}>
+              Back
             </Button>
-          </div>
-        ) : (
-          <div>
-            <FormGroup row>
-              <FormControlLabel
-                control={
-                  <Switch checked={clearF.clearFlag} onChange={handleChangeClearFlag('clearFlag')} value="clearFlag" color="primary" />
-                }
-                label="Refresh Book Package Data"
-              />
-            </FormGroup>
-            <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-            {(activeStep === 2 ) && (
-                <div>
-                  <FormControl required component="fieldset" className={classes.formControl}>
-                  <FormLabel component="legend">Select one or more</FormLabel>
-                  <FormGroup>
-                    <div>
-                      {Object.keys(state)
-                        .filter(function(book) {
-                          return state[book][0];
-                        }).map(t => (
-                          <FormControlLabel
-                          control={<GreenCheckbox checked={state[t][1]} onChange={handleFinishedChange(t)} value={t} key={t} />}
-                          label={t}
-                        />
-                      ))}
-                    </div>                
-                  </FormGroup>
-                  <FormHelperText />
-                  </FormControl>
-                </div>
-              )}
-            <div>
-              <Button disabled={activeStep === 0} onClick={handleBack} color="primary" variant="contained" className={classes.button}>
-                Back
+
+            {isStepOptional(activeStep) && (
+              <Button variant="contained" color="primary" onClick={handleSkip} className={classes.button}>
+                Skip
               </Button>
-              {isStepOptional(activeStep) && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSkip}
-                  className={classes.button}
-                >
-                  Skip
-                </Button>
-              )}
+            )}
 
-              {activeStep < 2 && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  Next
-                </Button>
-              )}
+            <Button disabled={activeStep === 3} variant="contained" color="primary" onClick={handleNext} className={classes.button}>
+              Next
+            </Button>
 
-              {activeStep === 2 && (
-                <Button onClick={handleReset} color="primary" variant="contained" className={classes.button}>
-                Reset
-                </Button>
-              )}
+            {activeStep === 3 && (
+              <Button onClick={handleReset} color="primary" variant="contained" className={classes.button}>
+              Reset
+              </Button>
+            )}
 
 
 
-              {(activeStep === 0) && (
+            {(activeStep === 0) && (
+              <FormControl required component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend">Select one or more</FormLabel>
+              <FormGroup>
+                {books.bookDataTitles().map(t => 
+                  <FormControlLabel
+                    control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
+                    label={t} key={t}
+                  />
+                )}                
+              </FormGroup>
+              <FormHelperText />
+              </FormControl>
+            )}
+
+
+            {(activeStep === 1) && (
+              <div>
+                <Paper>
+                  <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={clearF.clearFlag} />
+                </Paper>
+              </div>
+            )}
+
+
+            {(activeStep === 2 ) && (
+              <div>
                 <FormControl required component="fieldset" className={classes.formControl}>
                 <FormLabel component="legend">Select one or more</FormLabel>
                 <FormGroup>
-                  {books.bookDataTitles().map(t => 
-                    <FormControlLabel
-                      control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
-                      label={t} key={t}
-                    />
-                  )}                
+                  <div>
+                    {Object.keys(state)
+                      .filter(function(book) {
+                        return state[book][0];
+                      }).map(t => (
+                        <FormControlLabel
+                        control={<GreenCheckbox checked={state[t][1]} onChange={handleFinishedChange(t)} value={t} key={t} />}
+                        label={t}
+                      />
+                    ))}
+                  </div>                
                 </FormGroup>
                 <FormHelperText />
                 </FormControl>
-              )}
+              </div>
+            )}
 
-
-              {(activeStep === 1) && (
-                <div>
-                  <Paper>
-                    <BookPackageRollup bookId={joinBookIds(state)} chapter='' clearFlag={clearF.clearFlag} />
-                  </Paper>
-                </div>
-              )}
-
-
-              {(activeStep === 2) && (
-                <div>
-                  {_opt}
-                </div>
-              )}
-            </div>
+            {(activeStep === 3) && (
+              <div>
+                {_opt}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
       </Container>
     </div>
