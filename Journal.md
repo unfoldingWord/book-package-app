@@ -11,6 +11,14 @@ and the beta v2 playground: https://www.typescriptlang.org/v2/en/play
 - *React Cheatsheets*: https://github.com/typescript-cheatsheets/react-typescript-cheatsheet#reacttypescript-cheatsheets
 - *Netlify*: https://app.netlify.com/teams/unfoldingword-hvaaits/sites https://app.netlify.com/teams/mandolyte/sites
 
+## 2020-02-12
+
+First cut at optimization is done and working well. Is quite plain looking and will be working on the UI/UX next.
+
+Two tools used for the favicon:
+- https://onlinepngtools.com/create-transparent-png
+- https://favicon.io/favicon-converter/
+
 ## 2020-02-04
 
 Found solution to track two dimensions for a single book (array of booleans). Also added text about what will happen if one wants to optimize the flow.

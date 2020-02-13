@@ -20,6 +20,7 @@ import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 import * as opt from '../src/core/optimize';
+import { CssBaseline, Container } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,7 +63,7 @@ function joinBookIds(state: opt.bpStateIF ) {
   
     
 function getSteps() {
-  return ['Select Books', 'Book Package Results', 'Optimized Flow'];
+  return ['Select Books', 'Book Package Details', 'Optimized Flow'];
 }
 
 function getStepContent(step: number) {
@@ -202,6 +203,8 @@ export default function HorizontalLinearStepper() {
           );
         })}
       </Stepper>
+      <CssBaseline />
+      <Container maxWidth="sm">
       <div>
         {activeStep === steps.length ? (
           <div>
@@ -223,7 +226,7 @@ export default function HorizontalLinearStepper() {
               />
             </FormGroup>
             <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-            {(activeStep === 1 ) && (
+            {(activeStep === 2 ) && (
                 <div>
                   <FormControl required component="fieldset" className={classes.formControl}>
                   <FormLabel component="legend">Select one or more</FormLabel>
@@ -312,6 +315,7 @@ export default function HorizontalLinearStepper() {
           </div>
         )}
       </div>
+      </Container>
     </div>
   );
 }
