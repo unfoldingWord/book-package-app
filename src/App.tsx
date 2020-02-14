@@ -8,6 +8,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+//import Headroom from 'react-headroom';
 
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -31,7 +32,7 @@ import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 import * as opt from '../src/core/optimize';
-import { Container } from '@material-ui/core';
+import { Container, CssBaseline } from '@material-ui/core';
 
 
 const drawerWidth = 240;
@@ -285,7 +286,9 @@ export default function HorizontalLinearStepper() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" className={clsx(classes.appBar, {[classes.appBarShift]: open })}>
+      <CssBaseline />
+      <AppBar position="fixed" 
+          className={clsx(classes.appBar, {[classes.appBarShift]: open })}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -324,8 +327,9 @@ export default function HorizontalLinearStepper() {
               label="Refresh Book Package Data"
             />
           </FormGroup>
-      </Drawer>
+      </Drawer> 
       <Paper>
+        <Typography> <br/> <br/> </Typography>
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
