@@ -1,11 +1,13 @@
 import React from 'react';
-import { withStyles, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { withStyles, makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,18 +16,51 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
+import Divider from '@material-ui/core/Divider';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
 import Switch from '@material-ui/core/Switch';
 
 import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 import * as opt from '../src/core/optimize';
-import { CssBaseline, Container } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 
+
+const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      flexGrow: 1,
+      display: 'flex',
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    appBar: {
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+    appBarShift: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+    title: {
+      flexGrow: 1,
     },
     formControl: {
       margin: theme.spacing(3),
@@ -37,6 +72,45 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    hide: {
+      display: 'none',
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    drawerHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: theme.spacing(0, 1),
+      ...theme.mixins.toolbar,
+      justifyContent: 'flex-end',
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      marginLeft: -drawerWidth,
+    },
+    contentShift: {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
+    },
+    alignItemsAndJustifyContent: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },  
+    offset: {...theme.mixins.toolbar},
   }),
 );
 
@@ -85,7 +159,26 @@ function getStepContent(step: number) {
 
 export default function HorizontalLinearStepper() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const theme = useTheme();
+
+  /* ----------------------------------------------------------
+      Menu drawer
+  */
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+
+  /* ----------------------------------------------------------
+      Stepper
+  */
+ const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const steps = getSteps();
 
@@ -136,8 +229,10 @@ export default function HorizontalLinearStepper() {
     }
   };
 
-  /* Data refresh switch */
-  const [clearF, setClearF] = React.useState({
+  /* ----------------------------------------------------------
+      Switch for data refresh
+  */
+ const [clearF, setClearF] = React.useState({
     clearFlag: false,
   });
 
@@ -146,8 +241,10 @@ export default function HorizontalLinearStepper() {
   };
 
 
-  /* Form/checkbox stuff */
-
+  
+  /* ----------------------------------------------------------
+      Form/checkbox stuff 
+  */
   // these are for the initial book seletion
   const [state, setState] = React.useState({ ...books.titlesToBoolean() }); 
   const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,7 +261,7 @@ export default function HorizontalLinearStepper() {
     setState({ ...state, [name]: b });
   };
 
-  const [_opt, setOpt] = React.useState(<div>Waiting-Optimize</div>);
+  const [_opt, setOpt] = React.useState(<CircularProgress/>);
   React.useEffect( () => {
     const fetchData = async () => {
       try {
@@ -188,28 +285,38 @@ export default function HorizontalLinearStepper() {
 
   return (
     <div className={classes.root}>
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {};
-          const labelProps: { optional?: React.ReactNode } = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      <CssBaseline />
-      <Container maxWidth="sm">
-      <div>
-        <div>
-          <FormGroup row>
+      <AppBar position="fixed" className={clsx(classes.appBar, {[classes.appBarShift]: open })}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Book Package and Flow Optimization
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </div>
+        <Divider />
+        <FormGroup row>
             <FormControlLabel
               control={
                 <Switch checked={clearF.clearFlag} onChange={handleChangeClearFlag('clearFlag')} value="clearFlag" color="primary" />
@@ -217,8 +324,31 @@ export default function HorizontalLinearStepper() {
               label="Refresh Book Package Data"
             />
           </FormGroup>
+      </Drawer>
+      <Paper>
+        <Stepper activeStep={activeStep}>
+          {steps.map((label, index) => {
+            const stepProps: { completed?: boolean } = {};
+            const labelProps: { optional?: React.ReactNode } = {};
+            if (isStepOptional(index)) {
+              labelProps.optional = <Typography variant="caption">Optional</Typography>;
+            }
+            if (isStepSkipped(index)) {
+              stepProps.completed = false;
+            }
+            return (
+              <Step key={label} {...stepProps}>
+                <StepLabel {...labelProps}>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+        <Container>
+          <div className={classes.alignItemsAndJustifyContent}>
           <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-          <div>
+          </div>
+
+          <div className={classes.alignItemsAndJustifyContent}>
             <Button disabled={activeStep === 0} onClick={handleBack} color="primary" variant="contained" className={classes.button}>
               Back
             </Button>
@@ -238,10 +368,11 @@ export default function HorizontalLinearStepper() {
               Reset
               </Button>
             )}
+          </div>
 
-
-
+          <div className={classes.alignItemsAndJustifyContent}>
             {(activeStep === 0) && (
+              <Paper>
               <FormControl required component="fieldset" className={classes.formControl}>
               <FormLabel component="legend">Select one or more</FormLabel>
               <FormGroup>
@@ -254,6 +385,7 @@ export default function HorizontalLinearStepper() {
               </FormGroup>
               <FormHelperText />
               </FormControl>
+              </Paper>
             )}
 
 
@@ -267,7 +399,7 @@ export default function HorizontalLinearStepper() {
 
 
             {(activeStep === 2 ) && (
-              <div>
+              <Paper>
                 <FormControl required component="fieldset" className={classes.formControl}>
                 <FormLabel component="legend">Select one or more</FormLabel>
                 <FormGroup>
@@ -285,20 +417,29 @@ export default function HorizontalLinearStepper() {
                 </FormGroup>
                 <FormHelperText />
                 </FormControl>
-              </div>
+              </Paper>
             )}
 
             {(activeStep === 3) && (
-              <div>
+              <Paper>
                 {_opt}
-              </div>
+              </Paper>
             )}
           </div>
-        </div>
-      </div>
-      </Container>
+        </Container>
+      </Paper>
     </div>
   );
 }
 
+/*
 
+<div
+    style={{
+        position: 'absolute', left: '50%', top: '50%',
+        transform: 'translate(-50%, -50%)'
+    }}
+    >
+    Hello, world!
+  </div>
+*/

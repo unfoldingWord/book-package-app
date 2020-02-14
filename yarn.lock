@@ -2661,10 +2661,10 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-book-package-rcl@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.1.0.tgz#6a084822db173cacb26cf4b176667412c64d154a"
-  integrity sha512-3kCW4DgEKdZxrnPbqDNLHeaXeDQ2jcnGIYF8C+Q8Xzpr4yGfHPRqO9eiZDmhf3U7pY4nr6LrRv5iqFJSqMEkxw==
+book-package-rcl@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.1.1.tgz#fbd4a964d4c22c108e39fdeb5bad6ed254e33712"
+  integrity sha512-IuH2FjJqADU4Kg9gJATGCkLBMofnsQ9ieW9WX1tYJHqwo0eMiHQXftdwiorWXaHP++imAq4PaNm9bLU8QSTdKw==
   dependencies:
     "@date-io/core" "^1.3.6"
     "@material-ui/core" "^4.5.1"
@@ -5855,6 +5855,11 @@ he@1.2.x:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+headroom.js@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/headroom.js/-/headroom.js-0.11.0.tgz#26547a932025e4243abf8ace001b4ce5e110ed20"
+  integrity sha512-yI4ciZRD1WH22wa5uJDg2kMtRvhJwUJWo2l41Eby0BoAD+lzXL98lf5jDFxP4Q5W3HmlrpfItSfmqc3jCtasbw==
 
 hex-color-regex@^1.1.0:
   version "1.1.0"

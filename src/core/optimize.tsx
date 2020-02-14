@@ -1,5 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as dbsetup from 'book-package-rcl';
 import * as books from './books';
 
@@ -8,7 +9,7 @@ export interface bpStateIF { [x: string]: boolean[]; };
 const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
 
 export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.SetStateAction<JSX.Element>> ) {
-    setOpt(<div>Waiting for optimization to complete</div>);
+    setOpt(<CircularProgress/>);
     // extract the books in the package
     const allbooks = Object.keys(state);
     // extract the book package
