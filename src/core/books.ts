@@ -34,6 +34,26 @@ export const testament = (bookId: string) => {
   return _testament;
 };
 
+export const newTestament = () => {
+  let list: string[] = [];
+  for (let i=0; i < data.length; i++) {
+    if ( data[i].testament === "new" ) {
+      list.push( data[i].title )
+    }
+  }
+  return list;
+}
+
+export const oldTestament = () => {
+  let list: string[] = [];
+  for (let i=0; i < data.length; i++) {
+    if ( data[i].testament === "old" ) {
+      list.push( data[i].title )
+    }
+  }
+  return list;
+}
+
 export const bookDataTitles = () => {
   let list: string[] = [];
   for (let i=0; i < data.length; i++) {

@@ -32,7 +32,7 @@ import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 import * as opt from '../src/core/optimize';
-import { Container, CssBaseline } from '@material-ui/core';
+import { Container, CssBaseline, Grid } from '@material-ui/core';
 
 
 const drawerWidth = 240;
@@ -376,20 +376,40 @@ export default function HorizontalLinearStepper() {
 
           <div className={classes.alignItemsAndJustifyContent}>
             {(activeStep === 0) && (
-              <Paper>
-              <FormControl required component="fieldset" className={classes.formControl}>
-              <FormLabel component="legend">Select one or more</FormLabel>
-              <FormGroup>
-                {books.bookDataTitles().map(t => 
-                  <FormControlLabel
-                    control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
-                    label={t} key={t}
-                  />
-                )}                
-              </FormGroup>
-              <FormHelperText />
-              </FormControl>
-              </Paper>
+              <Grid container spacing={3}>
+                <Grid item xs={6}>
+                  <Paper>
+                    <FormControl required component="fieldset" className={classes.formControl}>
+                    <FormLabel component="legend">Old Testament</FormLabel>
+                    <FormGroup>
+                      {books.oldTestament().map(t => 
+                        <FormControlLabel
+                          control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
+                          label={t} key={t}
+                        />
+                      )}                
+                    </FormGroup>
+                    <FormHelperText />
+                    </FormControl>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper>
+                    <FormControl required component="fieldset" className={classes.formControl}>
+                    <FormLabel component="legend">New Testament</FormLabel>
+                    <FormGroup>
+                      {books.newTestament().map(t => 
+                        <FormControlLabel
+                          control={<Checkbox checked={state[t][0]} onChange={handleChange(t)} value={t} />}
+                          label={t} key={t}
+                        />
+                      )}                
+                    </FormGroup>
+                    <FormHelperText />
+                    </FormControl>
+                  </Paper>
+                </Grid>
+              </Grid>
             )}
 
 

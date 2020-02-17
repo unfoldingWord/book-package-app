@@ -275,54 +275,36 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         <div>
             <div>
                 <Typography >
-                Where the following books may be completed:
+                It these book packages are completed:
                 </Typography>
                 </div>
                 <div>
+                <ul>
                 {booksDone.map(t => (
-                    <Typography key={t}>{t}</Typography>
+                    <li>
+                        <Typography key={t}>
+                            {t} (Book Package Word Count: {bookCountTotalsPreOpt.get(books.bookIdByTitle(t))?.toLocaleString()} )
+                        </Typography>
+                    </li>
                 ))}
+                </ul>
             </div>
             <br/>
             <br/>
             <div>
                 <Typography >
-                The following books will be optimized:
-                </Typography>
-            </div>
-            <div>
-                {booksOpt.map(t => (
-                    <Typography key={t}>{t}</Typography>
-                ))}
-            </div>
-            <br/>
-            <br/>
-            <div>
-                <Typography >
-                Pre-Optimization Summary:
+                Then proceed in this order:
                 </Typography>
                 <div>
-                {bklist.map(t => (
-                    <Typography key={t}>
-                        Book {t} has word count total of {bookCountTotalsPreOpt.get(t)}. <br/>
-                        ... and a total word count of deduped articles (UTA, UTW) of {bookCountArticleTotalsPreOpt.get(t)}. <br/>
-                    </Typography>
-                ) )}
-                </div>
-            </div>
-            <br/>
-            <br/>
-            <div>
-                <Typography >
-                Book Package Flow Optimization: <br/>
-                (assumes constant velocity)
-                </Typography>
-                <div>
+                <ol>
                 {optBooks.map( (t,i) => (
-                    <Typography key={t}>
-                        Book Package {t} has word count total of {optCounts[i]}. <br/>
-                    </Typography>
+                    <li>
+                        <Typography key={t}>
+                        {t} - Adjusted Book Package Word Count: {optCounts[i].toLocaleString()}
+                        </Typography>
+                    </li>
                 ) )}
+                </ol>
                 </div>
             </div>
             <br/>
@@ -337,5 +319,6 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
 /*   
 
 
+                            {t} (Book Package Word Count: {(bookCountTotalsPreOpt.get(books.bookIdByTitle(t)) as number).toLocaleString()})
 
 */
