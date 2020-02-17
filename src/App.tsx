@@ -369,7 +369,7 @@ export default function HorizontalLinearStepper() {
 
             {activeStep === 3 && (
               <Button onClick={handleReset} color="primary" variant="contained" className={classes.button}>
-              Reset
+              Start Over
               </Button>
             )}
           </div>
