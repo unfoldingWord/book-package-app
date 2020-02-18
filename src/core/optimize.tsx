@@ -273,9 +273,11 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     }
     setOpt (
         <div>
+            <br/>
+            <br/>
             <div>
                 <Typography >
-                It these book packages are completed:
+                If these book packages are completed:
                 </Typography>
                 </div>
                 <div>
