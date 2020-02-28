@@ -8,7 +8,6 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-//import Headroom from 'react-headroom';
 
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -32,7 +31,21 @@ import { green } from '@material-ui/core/colors';
 import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 import * as opt from '../src/core/optimize';
+import * as csv from '../src/core/exportBookPackage';
 import { Container, CssBaseline, Grid } from '@material-ui/core';
+
+function download(filename: string, text: string) {
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
 
 
 const drawerWidth = 240;
@@ -230,6 +243,11 @@ export default function HorizontalLinearStepper() {
     }
   };
 
+  async function handleExport() {
+    let data = await csv.exportBookPackage(state);
+    download('BookPackageData.csv', data);
+  };
+
   /* ----------------------------------------------------------
       Switch for data refresh
   */
@@ -367,6 +385,12 @@ export default function HorizontalLinearStepper() {
               Next
             </Button>
 
+            {activeStep === 1 && (
+              <Button onClick={handleExport} color="primary" variant="contained" className={classes.button}>
+              Export Book Package Data
+              </Button>
+            )}
+
             {activeStep === 3 && (
               <Button onClick={handleReset} color="primary" variant="contained" className={classes.button}>
               Start Over
@@ -466,4 +490,11 @@ export default function HorizontalLinearStepper() {
     >
     Hello, world!
   </div>
+
+
+
+              <Download file="BookPackageData.csv" content={ csv.exportBookPackage(state) } className={classes.button} >
+              <button type="button">Export Book Package</button>
+            </Download>
+
 */
