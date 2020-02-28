@@ -45,43 +45,71 @@ export async function exportBookPackage( state: bpStateIF ): Promise<any> {
     }
 
     // Add summary to csv data
-    let row: string[] = ['Summary of Book Package'];
+    let row: string[] = ['Book Package Summary'];
+    csv.addRow(csvdata,row);
+
+    row = ['Book','Word Count'];
     csv.addRow(csvdata,row);
 
     for ( let [k,v] of bookCountTotals.entries() ) {
         let n: string = "" + v.toLocaleString();
-        row = [k,n];
+        row = [books.bookTitleById(k),n];
         csv.addRow(csvdata,row);
     }
 
-    // Download the CSV data
-    // -- first, convert 2d array to CSV string
-    let csvDownload = csv.toCSV(csvdata);
-    return csvDownload;
+    // Add empty row
+    csv.addRow(csvdata,[''])
 
+    // Add details to csv data
+    row = ['Book Package Details']
+    csv.addRow(csvdata,row);
 
-    /*
-        For the books marked as done, compute their word count contribution by:
-        a. create a deduped list of all articles (UTA and UTW) with their counts
-        b. compute the grand total of the articles
-        c. Add to that the total word counts for UTQ, UTN, ULT, and UST
-        d. This sum total will be the starting point for the book package flow.
-    let doneGrandTotal = 0;
-    let doneArticleMap = new Map<string,number>();
-    for (let i=0; i < booksDone.length; i++) {
-        // get the UTA articles and their counts
-        let bkid = books.bookIdByTitle(booksDone[i]);
+    row = ['Resource Type','Book','Word Count']
+    csv.addRow(csvdata,row);
+
+    // get the UTQ, UTN, ULT, UST for each book
+    for (let bk of bookpkg) {
+        let bkid = books.bookIdByTitle(bk);
+
+        let dbkey = "utq-"+bkid;
+        let data  = await dbsetup.bpstore.getItem(dbkey);
+        row = ['UTQ',bk,data.total.toLocaleString()];
+        csv.addRow(csvdata,row);
+
+        dbkey = "utn-"+bkid;
+        data  = await dbsetup.bpstore.getItem(dbkey);
+        row = ['UTN',bk,data.total.toLocaleString()];
+        csv.addRow(csvdata,row);
+
+        dbkey = "ult-"+bkid;
+        data  = await dbsetup.bpstore.getItem(dbkey);
+        row = ['ULT',bk,data.total.toLocaleString()];
+        csv.addRow(csvdata,row);
+
+        dbkey = "ust-"+bkid;
+        data  = await dbsetup.bpstore.getItem(dbkey);
+        row = ['UST',bk,data.total.toLocaleString()];
+        csv.addRow(csvdata,row);
+    }
+
+    // Add empty row
+    csv.addRow(csvdata,[''])
+
+    row = ['Resource Type','Book','Article','Word Count']
+    csv.addRow(csvdata,row);
+
+    // get the UTA and UTW for book package
+    for (let bk of bookpkg) {
+        let bkid = books.bookIdByTitle(bk);
+
         let dbkey = "uta-"+bkid;
         let data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
         let articles = Object.keys(dam);
         for (let j=0; j< articles.length; j++) {
             let articleCount = dam[articles[j]].total;
-            // now add to map. dups expected
-            if ( ! doneArticleMap.has(articles[j])) {
-                doneArticleMap.set(articles[j], articleCount);
-                //console.log(articles[j], articleCount);
-            }
+            row = ['UTA',bk,articles[j],articleCount.toLocaleString()];
+            csv.addRow(csvdata,row);
         }
 
         // get the UTW articles and their counts
@@ -91,42 +119,16 @@ export async function exportBookPackage( state: bpStateIF ): Promise<any> {
         articles = Object.keys(dam);
         for (let j=0; j< articles.length; j++) {
             let articleCount = dam[articles[j]].total;
-            // now add to map. dups expected
-            if ( ! doneArticleMap.has(articles[j])) {
-                doneArticleMap.set(articles[j], articleCount);
-                //console.log(articles[j], articleCount);
-            }
+            row = ['UTW',bk,articles[j],articleCount.toLocaleString()];
+            csv.addRow(csvdata,row);
         }
     }
 
-    // add up the article contributions
-    for ( let c of doneArticleMap.values() ) {
-        doneGrandTotal = doneGrandTotal + c;
-    }
-    console.log("done article total is:", doneGrandTotal);
+   
+    // Download the CSV data
+    // -- first, convert 2d array to CSV string
+    let csvDownload = csv.toCSV(csvdata);
+    return csvDownload;
 
-    // now add in the UTQ, UTN, ULT, UST for each completed book
-    for (let i=0; i < booksDone.length; i++) {
-        // get the UTA articles and their counts
-        let bkid = books.bookIdByTitle(booksDone[i]);
-        let dbkey = "utq-"+bkid;
-        let data  = await dbsetup.bpstore.getItem(dbkey);
-        let resourceTotal = data.total;
-        doneGrandTotal = doneGrandTotal + resourceTotal;
-        dbkey = "utn-"+bkid;
-        data  = await dbsetup.bpstore.getItem(dbkey);
-        resourceTotal = data.total;
-        doneGrandTotal = doneGrandTotal + resourceTotal;
-        dbkey = "ult-"+bkid;
-        data  = await dbsetup.bpstore.getItem(dbkey);
-        resourceTotal = data.total;
-        doneGrandTotal = doneGrandTotal + resourceTotal;
-        dbkey = "ust-"+bkid;
-        data  = await dbsetup.bpstore.getItem(dbkey);
-        resourceTotal = data.total;
-        doneGrandTotal = doneGrandTotal + resourceTotal;
-    }
-    console.log("Done grand total is:", doneGrandTotal);
-    */
 
 }

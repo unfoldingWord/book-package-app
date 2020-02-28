@@ -243,11 +243,11 @@ export default function HorizontalLinearStepper() {
     }
   };
 
-<<<<<<< HEAD
   async function handleExport() {
     let data = await csv.exportBookPackage(state);
     download('BookPackageData.csv', data);
-=======
+  }
+  
   const handleSelectNoneOt = () => {
     let states = books.oldTestament();
     for( let i=0; i < states.length; i++) {
@@ -298,7 +298,6 @@ export default function HorizontalLinearStepper() {
       b[1] = false;  
       setState({ ...state, [name]: b });
     }
->>>>>>> c89eab1ed289dedb5e1a4ff2655553fcc49173d4
   };
 
   /* ----------------------------------------------------------
