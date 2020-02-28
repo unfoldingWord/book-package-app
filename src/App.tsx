@@ -243,9 +243,62 @@ export default function HorizontalLinearStepper() {
     }
   };
 
+<<<<<<< HEAD
   async function handleExport() {
     let data = await csv.exportBookPackage(state);
     download('BookPackageData.csv', data);
+=======
+  const handleSelectNoneOt = () => {
+    let states = books.oldTestament();
+    for( let i=0; i < states.length; i++) {
+      state[states[i]][0] = false;
+      state[states[i]][1] = false;
+      let name = states[i];
+      let b: boolean[] = [];
+      b[0] = false;
+      b[1] = false;  
+      setState({ ...state, [name]: b });
+    }
+  };
+
+  const handleSelectAllOt = () => {
+    let states = books.oldTestament();
+    for( let i=0; i < states.length; i++) {
+      state[states[i]][0] = true;
+      state[states[i]][1] = false;
+      let name = states[i];
+      let b: boolean[] = [];
+      b[0] = true;
+      b[1] = false;  
+      setState({ ...state, [name]: b });
+    }
+  };
+
+  const handleSelectNoneNt = () => {
+    let states = books.newTestament();
+    for( let i=0; i < states.length; i++) {
+      state[states[i]][0] = false;
+      state[states[i]][1] = false;
+      let name = states[i];
+      let b: boolean[] = [];
+      b[0] = false;
+      b[1] = false;  
+      setState({ ...state, [name]: b });
+    }
+  };
+
+  const handleSelectAllNt = () => {
+    let states = books.newTestament();
+    for( let i=0; i < states.length; i++) {
+      state[states[i]][0] = true;
+      state[states[i]][1] = false;
+      let name = states[i];
+      let b: boolean[] = [];
+      b[0] = true;
+      b[1] = false;  
+      setState({ ...state, [name]: b });
+    }
+>>>>>>> c89eab1ed289dedb5e1a4ff2655553fcc49173d4
   };
 
   /* ----------------------------------------------------------
@@ -403,6 +456,15 @@ export default function HorizontalLinearStepper() {
               <Grid container spacing={3}>
                 <Grid item xs={6}>
                   <Paper>
+                    <Typography> <br/> </Typography>
+                    <div>
+                    <Button onClick={handleSelectAllOt} color="primary" variant="contained" className={classes.button}>
+                      Select All
+                    </Button>
+                    <Button onClick={handleSelectNoneOt} color="primary" variant="contained" className={classes.button}>
+                      Select None
+                    </Button>
+                    </div>
                     <FormControl required component="fieldset" className={classes.formControl}>
                     <FormLabel component="legend">Old Testament</FormLabel>
                     <FormGroup>
@@ -419,6 +481,16 @@ export default function HorizontalLinearStepper() {
                 </Grid>
                 <Grid item xs={6}>
                   <Paper>
+                    <Typography> <br/> </Typography>
+                    <div>
+                    <Button onClick={handleSelectAllNt} color="primary" variant="contained" className={classes.button}>
+                      Select All
+                    </Button>
+                    <Button onClick={handleSelectNoneNt} color="primary" variant="contained" className={classes.button}>
+                      Select None
+                    </Button>
+                    </div>
+
                     <FormControl required component="fieldset" className={classes.formControl}>
                     <FormLabel component="legend">New Testament</FormLabel>
                     <FormGroup>
