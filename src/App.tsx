@@ -32,6 +32,7 @@ import {BookPackageRollup} from 'book-package-rcl';
 import * as books from '../src/core/books';
 import * as opt from '../src/core/optimize';
 import * as csv from '../src/core/exportBookPackage';
+import * as exp from '../src/core/export';
 import { Container, CssBaseline, Grid } from '@material-ui/core';
 
 function download(filename: string, text: string) {
@@ -243,11 +244,20 @@ export default function HorizontalLinearStepper() {
     }
   };
 
-  async function handleExport() {
+  async function handleExportDetails() {
     let data = await csv.exportBookPackage(state);
-    download('BookPackageData.csv', data);
+    let ts = new Date().toISOString();
+    let fn = 'BookPackageDetails-' + ts + '.csv';
+    download(fn, data);
   }
-  
+
+  async function handleExportSummary() {
+    let data = await exp.exportCounts(state);
+    let ts = new Date().toISOString();
+    let fn = 'BookPackageSummary-' + ts + '.csv';
+    download(fn, data);
+  }
+
   const handleSelectNoneOt = () => {
     let states = books.oldTestament();
     for( let i=0; i < states.length; i++) {
@@ -396,7 +406,13 @@ export default function HorizontalLinearStepper() {
               }
               label="Refresh Book Package Data"
             />
-          </FormGroup>
+        </FormGroup>
+        <Divider />
+        {activeStep === 1 && (
+              <Button onClick={handleExportDetails} color="primary" variant="contained" className={classes.button}>
+              Export Snapshot
+              </Button>
+        )}
       </Drawer> 
       <Paper>
         <Typography> <br/> <br/> </Typography>
@@ -438,8 +454,8 @@ export default function HorizontalLinearStepper() {
             </Button>
 
             {activeStep === 1 && (
-              <Button onClick={handleExport} color="primary" variant="contained" className={classes.button}>
-              Export Book Package Data
+              <Button onClick={handleExportSummary} color="primary" variant="contained" className={classes.button}>
+              Export
               </Button>
             )}
 
