@@ -124,7 +124,28 @@ export async function exportBookPackage( state: bpStateIF ): Promise<any> {
         }
     }
 
-   
+    // Add empty row
+    csv.addRow(csvdata,[''])
+
+    // Get list of errors, if any
+    row = ['Book Package Errors']
+    csv.addRow(csvdata,row);
+
+    const sufkey = '-errors';
+    for (let bk of bookpkg) {
+        let bkid = books.bookIdByTitle(bk);
+        for (let res of resourcePrefixes) {
+            let dbkey = res+bkid+sufkey;
+            let data: string[]  = await dbsetup.bpstore.getItem(dbkey);
+            if ( data === null ) { continue }
+            let dedupList: string[] = [...new Set(data)]
+            for ( let i=0; i < dedupList.length; i++ ) {
+                row = [dedupList[i]]
+                csv.addRow(csvdata,row);
+            }
+        }
+    }
+
     // Download the CSV data
     // -- first, convert 2d array to CSV string
     let csvDownload = csv.toCSV(csvdata);
