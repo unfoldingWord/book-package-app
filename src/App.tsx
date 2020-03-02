@@ -35,6 +35,8 @@ import * as csv from '../src/core/exportBookPackage';
 import * as exp from '../src/core/export';
 import { Container, CssBaseline, Grid } from '@material-ui/core';
 
+import * as dbsetup from 'book-package-rcl';
+
 function download(filename: string, text: string) {
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(text));
@@ -251,6 +253,10 @@ export default function HorizontalLinearStepper() {
     download(fn, data);
   }
 
+  async function handleDeleteLocalCache() {
+    dbsetup.bpstore.clear();
+  }
+
   async function handleExportSummary() {
     let data = await exp.exportCounts(state);
     let ts = new Date().toISOString();
@@ -408,11 +414,13 @@ export default function HorizontalLinearStepper() {
             />
         </FormGroup>
         <Divider />
-        {activeStep === 1 && (
-              <Button onClick={handleExportDetails} color="primary" variant="contained" className={classes.button}>
+              <Button disabled={activeStep !== 0 } onClick={handleDeleteLocalCache} color="primary" variant="contained" className={classes.button}>
+              Delete Local Cache
+              </Button>
+        <Divider />
+              <Button disabled={activeStep !==1 }   onClick={handleExportDetails} color="primary" variant="contained" className={classes.button}>
               Export Snapshot
               </Button>
-        )}
       </Drawer> 
       <Paper>
         <Typography> <br/> <br/> </Typography>
