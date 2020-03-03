@@ -50,7 +50,6 @@ function download(filename: string, text: string) {
     document.body.removeChild(element);
 }
 
-
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -172,31 +171,22 @@ function getStepContent(step: number) {
   }
 }
 
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+let queryProcessedOnce = false;
+function useQuery() {
+  let search = window.location.search;
+  //console.log("url=",window.location.origin,window.location.pathname)
+  return new URLSearchParams(search);
+}
 
-
-export default function HorizontalLinearStepper() {
-  const classes = useStyles();
-  const theme = useTheme();
-
-  /* ----------------------------------------------------------
-      Menu drawer
-  */
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-
-  /* ----------------------------------------------------------
+export default function App() {
+  const [state, setState] = React.useState({ ...books.titlesToBoolean() }); 
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [skipped, setSkipped] = React.useState(new Set<number>());
+    /* ----------------------------------------------------------
       Stepper
   */
- const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set<number>());
   const steps = getSteps();
 
   const isStepOptional = (step: number) => {
@@ -207,16 +197,6 @@ export default function HorizontalLinearStepper() {
     return skipped.has(step);
   };
 
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
-  };
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
@@ -246,6 +226,69 @@ export default function HorizontalLinearStepper() {
     }
   };
 
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  let query = useQuery();
+  if ( activeStep === 0 && queryProcessedOnce === false ) {
+    queryProcessedOnce = true;
+    let bks   = query.get("books");
+    if ( bks !== null ) {
+      // user has launched the app with URL query parameters
+      let barrayIds = bks.split(',');
+      let barrayTitles: string[] = [];
+      for ( let i=0; i < barrayIds.length; i++ ) {
+        let x = books.bookTitleById(barrayIds[i]);
+        if ( x === "" ) {
+          alert("Invalid Book Id:"+barrayIds[i]);
+          break;
+        }
+        barrayTitles.push(x);
+      }
+      for( let i=0; i < barrayTitles.length; i++) {
+        let name = barrayTitles[i];
+        console.log("name:",name)
+        // set the state variables
+        state[name][0] = true;
+        state[name][1] = false;
+        let b: boolean[] = [];
+        b[0] = true;
+        b[1] = false;  
+      }
+      // skip to step 2...
+      //activeStep = 1; //works sort of
+      handleNext();
+      // for URL, always clear local cache
+      dbsetup.bpstore.clear();
+    }
+  }
+
+
+  const classes = useStyles();
+  const theme = useTheme();
+
+  /* ----------------------------------------------------------
+      Menu drawer
+  */
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+
   async function handleExportDetails() {
     let data = await csv.exportBookPackage(state);
     let ts = new Date().toISOString();
@@ -253,6 +296,38 @@ export default function HorizontalLinearStepper() {
     download(fn, data);
   }
 
+  const copyToClipboard = (str: string) => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+
+  async function handlePermalink() {
+    let states = Object.keys(state);
+    let ids: string[] = [];
+    for( let i=0; i < states.length; i++) {
+      let name = states[i];
+      if ( state[name][0] === true ) {
+        // get the id
+        let id = books.bookIdByTitle(name);
+        ids.push(id);
+      }
+    }
+    // build up the URL
+    const origin   = window.location.origin;
+    const pathname = window.location.pathname;
+    const qstring  = '?books=';
+    let url = origin+pathname+qstring+ids.join(',');
+    copyToClipboard(url);
+    alert("Copied to clipboard!");
+  }
+//http://localhost:3000/book-package-app/?books=gen,exo
   async function handleDeleteLocalCache() {
     dbsetup.bpstore.clear();
   }
@@ -333,7 +408,6 @@ export default function HorizontalLinearStepper() {
       Form/checkbox stuff 
   */
   // these are for the initial book seletion
-  const [state, setState] = React.useState({ ...books.titlesToBoolean() }); 
   const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     let b: boolean[] = [];
     b[0] = event.target.checked;
@@ -362,13 +436,12 @@ export default function HorizontalLinearStepper() {
         return;
       }
     };
-    if (activeStep !== 2) {return;}
+    if (activeStep !== 3) {return;}
     fetchData();
   }, [state,activeStep]); 
   // the parameter [] allows the effect to skip if value unchanged
   // an empty [] will only update on mount of component
   
-
 
   return (
     <div className={classes.root}>
@@ -417,9 +490,13 @@ export default function HorizontalLinearStepper() {
               <Button disabled={activeStep !== 0 } onClick={handleDeleteLocalCache} color="primary" variant="contained" className={classes.button}>
               Delete Local Cache
               </Button>
-        <Divider />
+              <Divider />
               <Button disabled={activeStep !==1 }   onClick={handleExportDetails} color="primary" variant="contained" className={classes.button}>
               Export Snapshot
+              </Button>
+              <Divider />
+              <Button disabled={activeStep === 0 }   onClick={handlePermalink} color="primary" variant="contained" className={classes.button}>
+              Book Package Permalink
               </Button>
       </Drawer> 
       <Paper>
