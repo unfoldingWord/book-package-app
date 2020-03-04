@@ -8,6 +8,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Popover from '@material-ui/core/Popover';
 
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -276,6 +277,23 @@ export default function App() {
   const theme = useTheme();
 
   /* ----------------------------------------------------------
+      Popover
+  */
+ const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const popen = Boolean(anchorEl);
+  const id = popen ? 'simple-popover' : undefined;
+
+
+  /* ----------------------------------------------------------
       Menu drawer
   */
   const [open, setOpen] = React.useState(false);
@@ -308,7 +326,7 @@ export default function App() {
     document.body.removeChild(el);
   };
 
-  async function handlePermalink() {
+  async function handlePermalink(event: React.MouseEvent<HTMLButtonElement>) {
     let states = Object.keys(state);
     let ids: string[] = [];
     for( let i=0; i < states.length; i++) {
@@ -325,7 +343,7 @@ export default function App() {
     const qstring  = '?books=';
     let url = origin+pathname+qstring+ids.join(',');
     copyToClipboard(url);
-    alert("Copied to clipboard!");
+    setAnchorEl(event.currentTarget);
   }
 //http://localhost:3000/book-package-app/?books=gen,exo
   async function handleDeleteLocalCache() {
@@ -495,9 +513,27 @@ export default function App() {
               Export Snapshot
               </Button>
               <Divider />
-              <Button disabled={activeStep === 0 }   onClick={handlePermalink} color="primary" variant="contained" className={classes.button}>
-              Book Package Permalink
+              <Button disabled={activeStep === 0 } aria-describedby={id}  
+                onClick={handlePermalink} color="primary" variant="contained" className={classes.button}
+              >
+              Copy Link
               </Button>
+              <Popover
+                id={id}
+                open={popen}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+              >
+                <Typography>Link copied to clipboard!</Typography>
+              </Popover>
       </Drawer> 
       <Paper>
         <Typography> <br/> <br/> </Typography>
