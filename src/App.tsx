@@ -279,11 +279,7 @@ export default function App() {
   /* ----------------------------------------------------------
       Popover
   */
- const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -689,20 +685,9 @@ export default function App() {
 }
 
 /*
-
-<div
-    style={{
-        position: 'absolute', left: '50%', top: '50%',
-        transform: 'translate(-50%, -50%)'
-    }}
-    >
-    Hello, world!
-  </div>
+http://localhost:3000/book-package-app/?books=mat,mrk,luk,jhn,act,rom,1co,2co,gal,eph,php,col,1th,2th,1ti,2ti,tit,phm,heb,jas,1pe,2pe,1jn,2jn,3jn,jud,rev
 
 
 
-              <Download file="BookPackageData.csv" content={ csv.exportBookPackage(state) } className={classes.button} >
-              <button type="button">Export Book Package</button>
-            </Download>
 
 */
