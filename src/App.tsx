@@ -185,7 +185,8 @@ export default function App() {
   const [state, setState] = React.useState({ ...books.titlesToBoolean() }); 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
-    /* ----------------------------------------------------------
+  
+  /* ----------------------------------------------------------
       Stepper
   */
   const steps = getSteps();
