@@ -62,7 +62,7 @@ $
 
 Step 4. Initialize capacitor
 ```
-$ npx cap init "book-package-app" "org.unfoldingword.BookPackageApp"
+$ npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
 
 
 *   Your Capacitor project is ready to go!  *
@@ -79,19 +79,7 @@ https://capacitor.ionicframework.com/docs/basics/workflow
 $
 ```
 
-Step 5. The above creates a config file for capacitor. There should be a way to set the "webDir" value, but haven't found it yet. It defaults to "www" and it should be "build". Thus a wee bash command:
-```
-$ sed -e s/"www"/"build"/ < capacitor.config.json > x && mv x capacitor.config.json && cat capacitor.config.json
-{
-  "appId": "org.unfoldingword.BookPackageApp",
-  "appName": "book-package-app",
-  "bundledWebRuntime": false,
-  "npmClient": "yarn",
-  "webDir": "build",
-  "cordova": {}
-}
-$
-```
+Step 5. Removed
 
 Step 6. Build the app (could be done before Step 5)
 ```
@@ -143,6 +131,11 @@ Step 8. Update the `package.json` file in the electron folder:
   "name": "book-package-app",
   "version": "1.0.0",
   "description": "Book Package App",
+```
+- using this:
+```
+cd electron
+sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json
 ```
 
 Step 9. Copy the build folder to the platform target(s). In this case only 'electron'.
