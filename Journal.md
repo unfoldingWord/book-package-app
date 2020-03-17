@@ -1,5 +1,199 @@
 # Journal
 
+## Electon Packaging
+
+This series of instructions are from the very beginning, starting at cloning the repo. This will be close to what a Github Action workflow will need to do.
+
+Once capacitor is configured, the changes will be committed/pushed. So one difference is that capcitor itself will not need to be added to the project as is done below.
+
+Step 1. clone the repo and step into the cloned folder
+```
+$ git clone git@github.com:unfoldingWord/book-package-app.git
+Cloning into 'book-package-app'...
+remote: Enumerating objects: 18, done.
+remote: Counting objects: 100% (18/18), done.
+remote: Compressing objects: 100% (18/18), done.
+remote: Total 557 (delta 1), reused 6 (delta 0), pack-reused 539
+Receiving objects: 100% (557/557), 8.91 MiB | 654.00 KiB/s, done.
+Resolving deltas: 100% (359/359), done.
+$ cd book-package-app
+$
+```
+
+Step 2. get the dependencies
+```
+$ yarn
+yarn install v1.22.4
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+... elided ...
+[4/4] Building fresh packages...
+Done in 164.84s.
+$
+```
+
+Step 3. add Capacitor
+```
+$ yarn add @capacitor/core @capacitor/cli
+yarn add v1.22.4
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+... elided ... 
+[4/4] Building fresh packages...
+
+success Saved lockfile.
+success Saved 9 new dependencies.
+info Direct dependencies
+├─ @capacitor/cli@1.5.1
+└─ @capacitor/core@1.5.1
+info All dependencies
+├─ @capacitor/cli@1.5.1
+├─ @capacitor/core@1.5.1
+├─ cli-spinners@1.3.1
+├─ compare-versions@3.6.0
+├─ ora@1.4.0
+├─ plist@3.0.1
+├─ xml2js@0.4.23
+├─ xmlbuilder@9.0.7
+└─ xmldom@0.1.31
+Done in 33.67s.
+$
+```
+
+Step 4. Initialize capacitor
+```
+$ npx cap init "book-package-app" "org.unfoldingword.BookPackageApp"
+
+
+*   Your Capacitor project is ready to go!  *
+
+Add platforms using "npx cap add":
+
+  npx cap add android
+  npx cap add ios
+  npx cap add electron
+
+Follow the Developer Workflow guide to get building:
+https://capacitor.ionicframework.com/docs/basics/workflow
+
+$
+```
+
+Step 5. The above creates a config file for capacitor. There should be a way to set the "webDir" value, but haven't found it yet. It defaults to "www" and it should be "build". Thus a wee bash command:
+```
+$ sed -e s/"www"/"build"/ < capacitor.config.json > x && mv x capacitor.config.json && cat capacitor.config.json
+{
+  "appId": "org.unfoldingword.BookPackageApp",
+  "appName": "book-package-app",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "build",
+  "cordova": {}
+}
+$
+```
+
+Step 6. Build the app (could be done before Step 5)
+```
+$ yarn build
+yarn run v1.22.4
+$ react-scripts build
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  513.62 KB  build\static\js\2.f8631465.chunk.js
+  10.63 KB   build\static\js\main.06ac67eb.chunk.js
+  782 B      build\static\js\runtime-main.d8cbb9cd.js
+  284 B      build\static\css\main.2f6ca397.chunk.css
+
+The project was built assuming it is hosted at /book-package-app/.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+To publish it at https://unfoldingword.github.io/book-package-app/ , run:
+
+  yarn run deploy
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+Done in 124.73s.
+$
+```
+
+Step 7. Add electron as a target platform
+```
+$ npx cap add electron
+$ # note no output, but does create folder "electron"
+```
+
+Step 8. Update the `package.json` file in the electron folder:
+- update app name and description
+- from:
+```
+  "name": "capacitor-app",
+  "version": "1.0.0",
+  "description": "An Amazing Capacitor App",
+```
+- to:
+```
+  "name": "book-package-app",
+  "version": "1.0.0",
+  "description": "Book Package App",
+```
+
+Step 9. Copy the build folder to the platform target(s). In this case only 'electron'.
+```
+$ npx cap copy
+$ # note no output
+```
+
+Step 10. The web app has an `index.html` file that has references that will not work with electron. In particular, all references that begin with "/book-package-app/" must be altered to "./".
+```
+$ cd electron/app
+$ sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html
+```
+
+Step 11. Install the packager for electron and verify:
+```
+$ npm install electron-packager
+$ electron-packager --version
+Electron Packager 14.2.1
+Node v10.16.3
+Host Operating system: win32 10.0.18362 (x64)
+$
+```
+
+Step 12. Run the packager. Note that when run on a local computer, it can only generate OS/Arch combinations compatible with the local computer. Suppose you have a Win10 computer, then it can generate Windows and Linux OS (even for different architecture, since there no "assembly" code involved)
+```
+$ cd electron/
+$ pwd
+/c/Users/mando/Projects/cecil.new/book-package-app/electron
+$ electron-packager . --all
+Packaging app for platform linux ia32 using electron v7.1.14
+Packaging app for platform win32 ia32 using electron v7.1.14
+Packaging app for platform linux x64 using electron v7.1.14
+Skipping win32 x64 (output dir already exists, use --overwrite to force)
+Packaging app for platform linux armv7l using electron v7.1.14
+Packaging app for platform linux arm64 using electron v7.1.14
+Packaging app for platform win32 arm64 using electron v7.1.14
+Cannot create symlinks (on Windows hosts, it requires admin privileges); skipping darwin platform        
+Cannot create symlinks (on Windows hosts, it requires admin privileges); skipping mas platform
+Wrote new apps to:
+C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-ia32
+C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-win32-ia32
+C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-x64
+true
+C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-armv7l
+C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-arm64
+C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-win32-arm64
+$
+```
+
+
 ## Links
 
 - *Installing Typescript*: https://www.typescriptlang.org/#download-links
