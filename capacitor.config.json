@@ -1,0 +1,8 @@
+{
+  "appId": "org.unfoldingword.BookPackageApp",
+  "appName": "book-package-app",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "build",
+  "cordova": {}
+}
