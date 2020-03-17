@@ -1,6 +1,6 @@
 # Journal
 
-## Electon Packaging
+## Electron Packaging
 
 This series of instructions are from the very beginning, starting at cloning the repo. This will be close to what a Github Action workflow will need to do.
 
