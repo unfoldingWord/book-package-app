@@ -41,10 +41,10 @@ jobs:
       - name: show packager version
         run: $PKGR --version
         env:
-          PKGR: $HOME/node_modules/.bin/electron-packager
+          PKGR: ./node_modules/.bin/electron-packager
       - name: run packager
         run: $PKGR .
         env:
-          PKGR: $HOME/node_modules/.bin/electron-packager
+          PKGR: ./node_modules/.bin/electron-packager
       - name: show platforms
-        run: ls $HOME/electron/book*
+        run: ls ./electron/*
