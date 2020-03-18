@@ -79,15 +79,16 @@ echo +-------------------------------------------------------------+
 echo Install electron packager and show version
 echo +-------------------------------------------------------------+
 
+PACKAGERBIN=$ROOT/node_modules/.bin/electron-packager
 yarn add electron-packager 
-electron-packager --version 
+$PACKAGERBIN --version 
 
 echo +-------------------------------------------------------------+
 echo Run packager 
 echo +-------------------------------------------------------------+
 
 cd $ROOT/electron
-electron-packager . --all
+$PACKAGERBIN . --all
 
 
 echo +-------------------------------------------------------------+
