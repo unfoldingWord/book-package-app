@@ -19,7 +19,7 @@ jobs:
       - name: Show repo
         run: ls
       - name: Run yarn to retrieve dependencies
-      - run: yarn
+        run: yarn
 #      - run: echo 'Yarn - add capacitor'
 #      - run: yarn add @capacitor/core @capacitor/cli
 #      - run: echo 'Initialize capacitor'
