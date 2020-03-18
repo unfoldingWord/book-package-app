@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Use node
         uses: actions/setup-node@v1
       - run: echo 'Home is ${{ home }}.'
 #      - run: echo 'Run yarn'
