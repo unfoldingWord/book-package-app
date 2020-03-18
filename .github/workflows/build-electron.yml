@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v1
       - name: Show home
         run: echo Home is $HOME 
-      - name: Show repo
+      - name: Show repo after checkout
         run: ls
       - name: Run yarn to retrieve dependencies
         run: yarn
@@ -30,8 +30,8 @@ jobs:
         run: yarn build
       - name: npx cap add electron
         run: npx cap add electron
-      - name: echo the end time
-        run: echo The time is ${date}
+      - name: show repo after add electron
+        run: ls 
       - name: fix electron package.json
         run: cd $HOME/electron && sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json && cd $HOME
       - name: fix electron index.html
