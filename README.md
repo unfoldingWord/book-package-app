@@ -1,3 +1,4 @@
+![build electron from react web](https://github.com/unfoldingWord/book-package-app/workflows/build%20electron%20from%20react%20web/badge.svg)
 # Book Package App
 
 This project is described in some detail in `DesignSpec.md`. 
