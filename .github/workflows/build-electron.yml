@@ -10,6 +10,8 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
+      - name: echo the start time
+        run: echo 'The time is ${date}.'
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Use node
@@ -20,15 +22,14 @@ jobs:
         run: ls
       - name: Run yarn to retrieve dependencies
         run: yarn
-#      - run: echo 'Yarn - add capacitor'
-#      - run: yarn add @capacitor/core @capacitor/cli
-#      - run: echo 'Initialize capacitor'
-#      - run: npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
-#      - run: echo 'Yarn - build'
-#      - run: yarn build
-#      - run: echo 'npx cap add electron'
-#      - run: npx cap add electron
-#      - run: 
+      - name: Yarn - add capacitor
+        run: yarn add @capacitor/core @capacitor/cli
+      - name: Initialize capacitor
+        run: npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
+      - name: Yarn - build
+        run: yarn build
+      - name: npx cap add electron
+        run: npx cap add electron
       # This step prints an output (time) from the previous step's action.
-      - name: Echo the time
-        run: echo 'The time was ${{ steps.hello.outputs.time }}.'
+      - name: echo the end time
+        run: echo 'The time is ${date}.'
