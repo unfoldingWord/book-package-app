@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo the start time
-        run: echo 'The time is ${date}.'
+        run: echo The time is `date`
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Use node
@@ -30,6 +30,21 @@ jobs:
         run: yarn build
       - name: npx cap add electron
         run: npx cap add electron
-      # This step prints an output (time) from the previous step's action.
       - name: echo the end time
-        run: echo 'The time is ${date}.'
+        run: echo The time is ${date}
+      - name: fix electron package.json
+        run: cd $HOME/electron && sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json && cd $HOME
+      - name: fix electron index.html
+        run: cd $HOME/electron/app && sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html && cd $HOME
+      - name: add electron packager
+        run: yarn add electron-packager 
+      - name: show packager version
+        run: $PKGR --version
+        env:
+          PKGR: $HOME/node_modules/.bin/electron-packager
+      - name: run packager
+        run: $PKGR .
+        env:
+          PKGR: $HOME/node_modules/.bin/electron-packager
+      - name: show platforms
+        run: ls $HOME/electron/book*
