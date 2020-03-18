@@ -12,7 +12,19 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - run: ls
+        uses: actions/setup-node@v1
+      - run: echo 'Home is ${{ home }}.'
+#      - run: echo 'Run yarn'
+#      - run: yarn
+#      - run: echo 'Yarn - add capacitor'
+#      - run: yarn add @capacitor/core @capacitor/cli
+#      - run: echo 'Initialize capacitor'
+#      - run: npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
+#      - run: echo 'Yarn - build'
+#      - run: yarn build
+#      - run: echo 'npx cap add electron'
+#      - run: npx cap add electron
+#      - run: 
       # This step prints an output (time) from the previous step's action.
       - name: Echo the time
         run: echo 'The time was ${{ steps.hello.outputs.time }}.'
