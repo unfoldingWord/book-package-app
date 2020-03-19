@@ -43,7 +43,7 @@ jobs:
         env:
           PKGR: ./node_modules/.bin/electron-packager
       - name: run packager
-        run: $PKGR .
+        run: cd electron && $PKGR .
         env:
           PKGR: ./node_modules/.bin/electron-packager
       - name: show platforms
