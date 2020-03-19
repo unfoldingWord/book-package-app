@@ -47,4 +47,4 @@ jobs:
         env:
           PKGR: ./node_modules/.bin/electron-packager
       - name: show platforms
-        run: ls ./electron/*
+        run: ls ./electron/app ./electron/book-package-app-*
