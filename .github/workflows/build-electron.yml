@@ -39,12 +39,12 @@ jobs:
       - name: add electron packager
         run: yarn add electron-packager 
       - name: show packager version
-        run: $PKGR --version
+        run: $GITHUB_WORKSPACE/$PKGR --version
         env:
-          PKGR: $GITHUB_WORKSPACE/node_modules/.bin/electron-packager
+          PKGR: ./node_modules/.bin/electron-packager
       - name: run packager
-        run: cd electron && $PKGR .
+        run: cd electron && $GITHUB_WORKSPACE/$PKGR .
         env:
-          PKGR: $GITHUB_WORKSPACE/node_modules/.bin/electron-packager
+          PKGR: ./node_modules/.bin/electron-packager
       - name: show platforms
         run: ls ./electron/*
