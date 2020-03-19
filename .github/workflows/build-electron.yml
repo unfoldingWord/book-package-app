@@ -32,10 +32,11 @@ jobs:
         run: npx cap add electron
       - name: show repo after add electron
         run: ls 
-      - name: fix electron package.json
-        run: cd electron && sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json 
-      - name: fix electron index.html
-        run: cd electron/app && sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html 
+      - name: fix electron package.json and index.html
+        run: |
+          sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json 
+          sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html
+        working-directory: ./electron
       - name: add electron packager
         run: yarn add electron-packager 
       - name: show packager version
@@ -43,8 +44,10 @@ jobs:
         env:
           PKGR: ./node_modules/.bin/electron-packager
       - name: run packager
-        run: cd electron && $GITHUB_WORKSPACE/$PKGR .
+        run: $GITHUB_WORKSPACE/$PKGR .
+        working-directory: ./electron
         env:
           PKGR: ./node_modules/.bin/electron-packager
       - name: show platforms
-        run: ls ./electron/app ./electron/book-package-app-*
+        run: ls book-package-app-*
+        working-directory: ./electron

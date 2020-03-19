@@ -186,6 +186,14 @@ C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-win
 $
 ```
 
+## Electron Installers
+
+- Linux Debian: https://github.com/electron-userland/electron-installer-debian
+- Zip installer: https://github.com/electron-userland/electron-installer-zip
+- Windows: https://github.com/electron/windows-installer
+- MacOS: https://github.com/electron-userland/electron-installer-dmg
+
+
 
 ## Links
 
