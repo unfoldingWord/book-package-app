@@ -17,7 +17,7 @@ jobs:
       - name: Use node
         uses: actions/setup-node@v1
       - name: Show home
-        run: echo Home is $HOME and PWD is `pwd`
+        run: echo Home is $HOME and PWD is $GITHUB_WORKSPACE
       - name: Show repo after checkout
         run: ls
       - name: Run yarn to retrieve dependencies
@@ -33,18 +33,18 @@ jobs:
       - name: show repo after add electron
         run: ls 
       - name: fix electron package.json
-        run: cd electron && sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json && cd ..
+        run: cd electron && sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json 
       - name: fix electron index.html
-        run: cd electron/app && sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html && cd ../..
+        run: cd electron/app && sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html 
       - name: add electron packager
         run: yarn add electron-packager 
       - name: show packager version
         run: $PKGR --version
         env:
-          PKGR: ./node_modules/.bin/electron-packager
+          PKGR: $GITHUB_WORKSPACE/node_modules/.bin/electron-packager
       - name: run packager
         run: cd electron && $PKGR .
         env:
-          PKGR: ./node_modules/.bin/electron-packager
+          PKGR: $GITHUB_WORKSPACE/node_modules/.bin/electron-packager
       - name: show platforms
         run: ls ./electron/*
