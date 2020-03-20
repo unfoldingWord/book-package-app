@@ -90,6 +90,12 @@ echo +-------------------------------------------------------------+
 cd $ROOT/electron
 $PACKAGERBIN . 
 
+echo +-------------------------------------------------------------+
+echo Create zip 
+echo +-------------------------------------------------------------+
+
+ZIPPER=$ROOT/node_modules/electron-installer-zip/bin/electron-installer-zip.js
+$ZIPPER --verbose ./electron/book-package-app-win32-x64 ./dist/book-package-app-win32-x64.zip
 
 echo +-------------------------------------------------------------+
 echo Done at `date`
