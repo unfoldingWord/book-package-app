@@ -9,6 +9,23 @@
     "url": "https://github.com/unfoldingword/book-package-app"
   },
   "private": false,
+  "build": {
+    "appId": "org.unfoldingword.book-package-app",
+    "category": "Development",
+    "directories":  {
+      "buildResources": "build",
+      "output": "dist",
+      "app": "electron/app"
+    },
+    "win": {
+      "target": "msi",
+      "icon": "build/favicon.ico"
+    },
+    "linux": {
+      "target": ["deb", "zip"],
+      "icon": "build/favicon-32x32.png"
+    }
+  },
   "devDependencies": {
     "gh-pages": "^2.2.0"
   },
@@ -39,7 +56,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "react-scripts build && gh-pages -d build"
+    "deploy": "react-scripts build && gh-pages -d build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "eslintConfig": {
     "extends": "react-app"
