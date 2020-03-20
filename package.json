@@ -9,24 +9,11 @@
     "url": "https://github.com/unfoldingword/book-package-app"
   },
   "private": false,
-  "build": {
-    "appId": "org.unfoldingword.book-package-app",
-    "category": "Development",
-    "directories":  {
-      "buildResources": "build",
-      "output": "dist",
-      "app": "electron/app"
-    },
-    "win": {
-      "target": "msi",
-      "icon": "build/favicon.ico"
-    },
-    "linux": {
-      "target": ["deb", "zip"],
-      "icon": "build/favicon-32x32.png"
-    }
-  },
   "devDependencies": {
+    "@capacitor/cli": "^1.5.1",
+    "@capacitor/core": "^1.5.1",
+    "electron": "^8.1.1",
+    "electron-builder": "^22.4.1",
     "gh-pages": "^2.2.0"
   },
   "dependencies": {

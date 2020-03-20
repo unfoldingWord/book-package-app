@@ -37,13 +37,19 @@ echo Root folder of project is $ROOT
 echo Get dependencies with yarn
 echo +-------------------------------------------------------------+
 
-yarn
+yarn install
+
+echo +-------------------------------------------------------------+
+echo Build the react web app with yarn build
+echo +-------------------------------------------------------------+
+
+yarn build
 
 echo +-------------------------------------------------------------+
 echo Add capacitor
 echo +-------------------------------------------------------------+
 
-yarn add @capacitor/core @capacitor/cli
+yarn add --dev @capacitor/core @capacitor/cli
 
 echo +-------------------------------------------------------------+
 echo Initialize capacitor
@@ -52,11 +58,6 @@ echo +-------------------------------------------------------------+
 npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
 
 echo +-------------------------------------------------------------+
-echo Build the react web app with yarn build
-echo +-------------------------------------------------------------+
-
-yarn build
-echo +-------------------------------------------------------------+
 echo Define target platform with capacitor
 echo +-------------------------------------------------------------+
 
@@ -64,38 +65,59 @@ npx cap add electron
 
 echo +-------------------------------------------------------------+
 echo Fix electron package.json
+echo a. change name
+echo b. change description
+echo c. supply author
 
 cd $ROOT/electron
-sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json
+sed -e "s/capacitor-app/book-package-app/" \
+	-e "s/An Amazing Capacitor App/Book Package App/" \
+	-e "s/author\": \"\"/author\": \"unfoldingword.org\"/ \
+	< package.json \
+	> x && mv x package.json
 cd $ROOT
 
+echo +-------------------------------------------------------------+
 echo Fix electron index.html
+echo +-------------------------------------------------------------+
 
 cd $ROOT/electron/app 
 sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html
 cd $ROOT 
 
 echo +-------------------------------------------------------------+
-echo Install electron packager and show version
+echo Copy index.js to app folder
 echo +-------------------------------------------------------------+
 
-PACKAGERBIN=$ROOT/node_modules/.bin/electron-packager
-yarn add electron-packager 
-$PACKAGERBIN --version 
+cd $ROOT/electron/
+cp index.js app
+cd $ROOT 
+
+
+
+echo +-------------------------------------------------------------+
+echo Key Concepts
+echo 1. At this point, the electron app is in the electron folder.
+echo 2. It is completely separated, divorced from the web React app.
+echo 3. It has its own package.json file
+echo 4. You can start it: yarn electron:start
+echo 5. All packaging work needs to be done inside this folder!
+echo +-------------------------------------------------------------+
+
+
+echo +-------------------------------------------------------------+
+echo Install electron builder
+echo +-------------------------------------------------------------+
+
+cd $ROOT/electron
+yarn add --dev electron
+yarn add --dev electron-builder 
 
 echo +-------------------------------------------------------------+
 echo Run packager 
 echo +-------------------------------------------------------------+
 
-cd $ROOT/electron
-$PACKAGERBIN . 
-
-echo +-------------------------------------------------------------+
-echo Create zip 
-echo +-------------------------------------------------------------+
-
-ZIPPER=$ROOT/node_modules/electron-installer-zip/bin/electron-installer-zip.js
-$ZIPPER --verbose ./electron/book-package-app-win32-x64 ./dist/book-package-app-win32-x64.zip
+electron-builder
 
 echo +-------------------------------------------------------------+
 echo Done at `date`

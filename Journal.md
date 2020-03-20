@@ -1,5 +1,76 @@
 # Journal
 
+## Graveyard
+Linux errors:
+```
+  ⨯ Cannot cleanup: 
+
+Error #1 --------------------------------------------------------------------------------
+Error: Please specify project homepage, see https://electron.build/configuration/configuration#Metadata-homepage
+
+Please specify author 'email' in the application package.json
+
+See https://docs.npmjs.com/files/package.json#people-fields-author-contributors
+
+It is required to set Linux .deb package maintainer. Or you can set maintainer in the custom linux options.
+(see https://www.electron.build/configuration/linux).
+
+    at FpmTarget.computeFpmMetaInfoOptions (C:\Users\mando\Projects\cecil.new\bpa\electron\node_modules\app-builder-lib\src\targets\fpm.ts:82:13)
+
+Error #2 --------------------------------------------------------------------------------
+Error: Please specify project homepage, see https://electron.build/configuration/configuration#Metadata-homepage
+
+Please specify author 'email' in the application package.json
+
+See https://docs.npmjs.com/files/package.json#people-fields-author-contributors
+
+It is required to set Linux .deb package maintainer. Or you can set maintainer in the custom linux options.
+(see https://www.electron.build/configuration/linux).
+```
+
+This is `electron/package.json`:
+```
+{
+  "name": "capacitor-app",
+  "version": "1.0.0",
+  "description": "An Amazing Capacitor App",
+  "main": "index.js",
+  "scripts": {
+    "electron:start": "electron ./",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win --linux --x64"
+  },
+  "build": {
+    "appId": "org.unfoldingword.book-package-app",
+    "win": {
+      "target": "msi",
+      "icon": "app/android-chrome-512x512.png"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "zip"
+      ],
+      "icon": "app/favicon-32x32.png"
+    }
+  },
+  "dependencies": {
+    "@capacitor/electron": "^1.5.1",
+    "electron-is-dev": "^1.1.0"
+  },
+  "devDependencies": {
+    "electron": "^7.0.0",
+    "electron-builder": "^22.4.1"
+  },
+  "keywords": [
+    "capacitor",
+    "electron"
+  ],
+  "author": "unfoldingWord.org",
+  "license": "ISC"
+}
+```
+
 ## Electron Packaging
 
 This series of instructions are from the very beginning, starting at cloning the repo. This will be close to what a Github Action workflow will need to do.
