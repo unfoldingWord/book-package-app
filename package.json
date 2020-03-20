@@ -10,11 +10,6 @@
   },
   "private": false,
   "devDependencies": {
-    "@capacitor/cli": "^1.5.1",
-    "@capacitor/core": "^1.5.1",
-    "electron-installer-zip": "^0.1.2",
-    "electron-winstaller": "^4.0.0",
-    "electron-packager": "^14.2.1",
     "gh-pages": "^2.2.0"
   },
   "dependencies": {
