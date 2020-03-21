@@ -52,10 +52,10 @@ jobs:
         working-directory: ./electron
       - name: add electron packager
         run: |
-          yarn add --dev electron
-          yarn add --dev electron-builder 
+          yarn global add --dev electron
+          yarn global add --dev electron-builder 
         working-directory: ./electron
-      - name: run packager
+      - name: run electron-builder
         run: electron-builder
         working-directory: ./electron
       - name: show platforms
