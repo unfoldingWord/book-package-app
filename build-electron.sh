@@ -68,9 +68,11 @@ echo Fix electron package.json, from public/electron-package.json
 echo a. change name
 echo b. change description
 echo c. supply author
+echo d. replace capacitor splash png with ours
 
 cd $ROOT
 cp ./public/electron-package.json ./electron/package.json
+cp ./public/android-chrome-512x512.png ./electron/splash_assets/splash.png
 
 echo +-------------------------------------------------------------+
 echo Fix electron index.html
