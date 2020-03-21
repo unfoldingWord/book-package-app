@@ -1,12 +1,7 @@
 name: build electron from react web
 
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - v1*
-
+  page_build
     
 jobs:
   build:
@@ -52,14 +47,14 @@ jobs:
         working-directory: ./electron
       - name: add electron and electron-builder
         run: |
-          yarn global add --dev electron
-          yarn global add --dev electron-builder 
+          yarn global add electron
+          yarn global add electron-builder 
         working-directory: ./electron
       - name: run electron-builder
         run: $PKG/electron-builder
         working-directory: ./electron
         env:
-          PKG: ./node_modules/.bin
+          PKG: ./electron/node_modules/.bin
       - name: show platforms
         run: ls book-package-app-*
         working-directory: ./electron
