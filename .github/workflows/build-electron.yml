@@ -1,7 +1,11 @@
 name: build electron from react web
 
 on:
-  page_build
+  push:
+    branches:
+      - master
+    tags:
+      - v1*
 
     
 jobs:
