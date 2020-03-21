@@ -1,7 +1,7 @@
 name: build electron from react web
 
 on:
-  page_build
+  push
     
 jobs:
   build:
