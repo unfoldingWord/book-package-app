@@ -1,18 +1,20 @@
 name: build electron from react web
 
 on:
-  push:
-    branches:
-      - gh-pages
+  page_build
 
+runs-on: ${{ matrix.os }}
+strategy:
+  matrix:
+    os: [windows-latest, ubuntu-latest]
+    
 jobs:
   build:
     # Job name is build-electron-from-react-web
     name: build-electron-from-react-web
     # This job runs on Linux
-    runs-on: ubuntu-latest
     steps:
-      - name: echo the start time
+      - name: echo Starting
         run: echo The time is `date`
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -35,22 +37,25 @@ jobs:
       - name: show repo after add electron
         run: ls 
       - name: fix electron package.json 
-        run: sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json 
-        working-directory: ./electron
+        run: |
+          cp ./public/electron-package.json ./electron/package.json
+          cp ./public/android-chrome-512x512.png ./electron/splash_assets/splash.png
       - name: fix electron index.html
         run: sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html
         working-directory: ./electron/app
-      - name: add electron packager
-        run: yarn add electron-packager 
-      - name: show packager version
-        run: $GITHUB_WORKSPACE/$PKGR --version
-        env:
-          PKGR: ./node_modules/.bin/electron-packager
-      - name: run packager
-        run: $GITHUB_WORKSPACE/$PKGR .
+      - name: copy index.js to app
+        run: cp index.js app
         working-directory: ./electron
-        env:
-          PKGR: ./node_modules/.bin/electron-packager
+      - name: add electron packager
+        run: |
+          yarn add --dev electron
+          yarn add --dev electron-builder 
+        working-directory: ./electron
+      - name: run packager
+        run: electron-builder
+        working-directory: ./electron
       - name: show platforms
         run: ls book-package-app-*
         working-directory: ./electron
+      - name: Done!
+        run: echo The time is `date`
