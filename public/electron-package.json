@@ -7,7 +7,7 @@
     "scripts": {
       "electron:start": "electron ./",
       "pack": "electron-builder --dir",
-      "dist": "electron-builder --win --linux --x64"
+      "dist": "electron-builder"
     },
     "build": {
       "appId": "org.unfoldingword.book-package-app",

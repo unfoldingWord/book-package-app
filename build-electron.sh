@@ -70,7 +70,7 @@ echo b. change description
 echo c. supply author
 
 cd $ROOT
-cp ./public/electron-package.json ./electron
+cp ./public/electron-package.json ./electron/package.json
 
 echo +-------------------------------------------------------------+
 echo Fix electron index.html
