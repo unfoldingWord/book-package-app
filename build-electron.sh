@@ -64,18 +64,13 @@ echo +-------------------------------------------------------------+
 npx cap add electron
 
 echo +-------------------------------------------------------------+
-echo Fix electron package.json
+echo Fix electron package.json, from public/electron-package.json
 echo a. change name
 echo b. change description
 echo c. supply author
 
-cd $ROOT/electron
-sed -e "s/capacitor-app/book-package-app/" \
-	-e "s/An Amazing Capacitor App/Book Package App/" \
-	-e "s/author\": \"\"/author\": \"unfoldingword.org\"/ \
-	< package.json \
-	> x && mv x package.json
 cd $ROOT
+cp ./public/electron-package.json ./electron
 
 echo +-------------------------------------------------------------+
 echo Fix electron index.html

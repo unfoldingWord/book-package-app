@@ -1,40 +1,15 @@
 # Journal
 
 ## Graveyard
-Linux errors:
-```
-  ⨯ Cannot cleanup: 
 
-Error #1 --------------------------------------------------------------------------------
-Error: Please specify project homepage, see https://electron.build/configuration/configuration#Metadata-homepage
-
-Please specify author 'email' in the application package.json
-
-See https://docs.npmjs.com/files/package.json#people-fields-author-contributors
-
-It is required to set Linux .deb package maintainer. Or you can set maintainer in the custom linux options.
-(see https://www.electron.build/configuration/linux).
-
-    at FpmTarget.computeFpmMetaInfoOptions (C:\Users\mando\Projects\cecil.new\bpa\electron\node_modules\app-builder-lib\src\targets\fpm.ts:82:13)
-
-Error #2 --------------------------------------------------------------------------------
-Error: Please specify project homepage, see https://electron.build/configuration/configuration#Metadata-homepage
-
-Please specify author 'email' in the application package.json
-
-See https://docs.npmjs.com/files/package.json#people-fields-author-contributors
-
-It is required to set Linux .deb package maintainer. Or you can set maintainer in the custom linux options.
-(see https://www.electron.build/configuration/linux).
-```
-
-This is `electron/package.json`:
+This is `electron/package.json`; maintain a copy in `public/electron-package.json`:
 ```
 {
-  "name": "capacitor-app",
+  "name": "book-package-app",
   "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
+  "description": "Book Package Flow and Optimization",
   "main": "index.js",
+  "homepage": "https://unfoldingword.github.io/book-package-app/",
   "scripts": {
     "electron:start": "electron ./",
     "pack": "electron-builder --dir",
@@ -42,16 +17,14 @@ This is `electron/package.json`:
   },
   "build": {
     "appId": "org.unfoldingword.book-package-app",
+    "linux": {
+      "target": "deb",
+      "icon": "app/favicon-32x32.png",
+      "maintainer": "unfoldingword.org"
+    },
     "win": {
       "target": "msi",
       "icon": "app/android-chrome-512x512.png"
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "zip"
-      ],
-      "icon": "app/favicon-32x32.png"
     }
   },
   "dependencies": {
@@ -66,7 +39,10 @@ This is `electron/package.json`:
     "capacitor",
     "electron"
   ],
-  "author": "unfoldingWord.org",
+  "author": {
+    "name": "unfoldingword.org",
+    "email": "finance@unfoldingword.org"
+  },
   "license": "ISC"
 }
 ```
