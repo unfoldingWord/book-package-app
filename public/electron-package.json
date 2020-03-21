@@ -17,7 +17,7 @@
         "maintainer": "unfoldingword.org"
       },
       "win": {
-        "target": "msi",
+        "target": "nsis",
         "icon": "app/android-chrome-512x512.png"
       }
     },
