@@ -50,11 +50,13 @@ jobs:
           yarn global add electron
           yarn global add electron-builder 
         working-directory: ./electron
+      - name: Find electron-builder
+        run: find . -name electron-builder
       - name: run electron-builder
         run: $PKG/electron-builder
         working-directory: ./electron
         env:
-          PKG: ./electron/node_modules/.bin
+          PKG: $GITHUB_WORKSPACE/electron/node_modules/.bin
       - name: show platforms
         run: ls book-package-app-*
         working-directory: ./electron

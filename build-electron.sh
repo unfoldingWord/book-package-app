@@ -114,7 +114,7 @@ echo +-------------------------------------------------------------+
 echo Run packager 
 echo +-------------------------------------------------------------+
 
-electron-builder
+$ROOT/electron/node_modules/.bin/electron-builder
 
 echo +-------------------------------------------------------------+
 echo Done at `date`
