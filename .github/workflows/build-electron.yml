@@ -51,7 +51,10 @@ jobs:
           yarn add electron-builder 
         working-directory: ./electron
       - name: Find electron-builder
-        run: find . -name electron-builder
+        run: |
+          find . -name electron-builder
+          pwd
+          ls -al ./electron/node_modules/.bin/elect*
       - name: run electron-builder
         run: $PKG/electron-builder
         working-directory: ./electron
