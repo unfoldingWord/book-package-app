@@ -47,8 +47,8 @@ jobs:
         working-directory: ./electron
       - name: add electron and electron-builder
         run: |
-          yarn global add electron
-          yarn global add electron-builder 
+          yarn add electron
+          yarn add electron-builder 
         working-directory: ./electron
       - name: Find electron-builder
         run: find . -name electron-builder
