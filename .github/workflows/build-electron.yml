@@ -56,10 +56,10 @@ jobs:
           pwd
           ls -al ./electron/node_modules/.bin/elect*
       - name: run electron-builder
-        run: $PKG/electron-builder
+        run: $GITHUB_WORKSPACE/$PKG/electron-builder
         working-directory: ./electron
         env:
-          PKG: $GITHUB_WORKSPACE/electron/node_modules/.bin
+          PKG: electron/node_modules/.bin
       - name: show platforms
         run: ls book-package-app-*
         working-directory: ./electron
