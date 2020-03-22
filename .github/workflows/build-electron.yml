@@ -61,7 +61,7 @@ jobs:
         env:
           PKG: electron/node_modules/.bin
       - name: show platforms
-        run: ls book-package-app-*
+        run: ls ./dist
         working-directory: ./electron
       - name: Done!
         run: echo The time is `date`
