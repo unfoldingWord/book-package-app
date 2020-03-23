@@ -61,6 +61,7 @@ jobs:
       - name: run electron-builder
         run: $GITHUB_WORKSPACE/$PKG/electron-builder
         working-directory: ./electron
+        shell: bash
         env:
           PKG: electron/node_modules/.bin
       - name: show platforms
