@@ -14,6 +14,29 @@ Note these lines which create a release.
 *notes*
 - made edits to workflow; let's push with no tag and see what happens. 
   - Expect: it will not start because no tag is provided.
+  - Actual: it worked as expected. No workflow initiated.
+- next set a tag and push it. The tag will be v1.0.0 to match semver in `./public/electron-package.json`. So after above push:
+```
+git tag          # lists all existing tags
+git tag v1.0.0   # tag for the current commit
+git push --tags  # push the new tag
+```
+For completeness, to remove the existing tags (which I think I needed to do because of a syntax error in the workflow yaml):
+```
+$ git tag -d v1.0
+Deleted tag 'v1.0' (was 25a247c)
+$ git tag -d v1.0.0
+Deleted tag 'v1.0.0' (was 7effb1c)
+$ git push origin --delete v1.0
+To github.com:unfoldingWord/book-package-app.git
+ - [deleted]         v1.0
+$ git push origin --delete v1.0.0
+To github.com:unfoldingWord/book-package-app.git
+ - [deleted]         v1.0.0
+$
+```
+
+
 
 ## Electron Packaging
 
