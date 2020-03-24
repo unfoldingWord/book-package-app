@@ -35,7 +35,34 @@ To github.com:unfoldingWord/book-package-app.git
  - [deleted]         v1.0.0
 $
 ```
+Fixed problem, committed, added tag, and pushed.
+```
+$ git commit -a -m "fixes to wf"
+[master 7fad4fb] fixes to wf
+ 2 files changed, 23 insertions(+), 2 deletions(-)
+$ git tag v1.0.0
+$ git push origin --tags
+Counting objects: 6, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (4/4), done.  
+Writing objects: 100% (6/6), 908 bytes | 302.00 KiB/s, done.
+Total 6 (delta 3), reused 0 (delta 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To github.com:unfoldingWord/book-package-app.git
+ * [new tag]         v1.0.0 -> v1.0.0
+$ 
+```
+  - Expect: workflow to run
+  - Actual: yes, it runs
 
+3. Problem: file path was wrong for asset, so here is clean up process:
+  - delete the release draft on Github itself
+  - delete the tag locally `git tag -d v1.0.0`
+  - delete the tag remotely `git push origin --delete v1.0.0`
+  - correct the file path problem in workflow yaml
+  - commit/push changes without a tag
+  - tag the commit locally `git tag v1.0.0`
+  - push tag `git push origin --tags`
 
 
 ## Electron Packaging
