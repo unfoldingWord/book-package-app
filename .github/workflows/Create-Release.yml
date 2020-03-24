@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     name: create-the-release
+    runs-on: ubuntu-latest
+
 
     # steps
     steps:
