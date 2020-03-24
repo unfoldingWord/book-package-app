@@ -14,7 +14,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        matrix:
         include:
           - os: ubuntu-latest
             artifact_name: book-package-app_1.0.0_amd64.deb

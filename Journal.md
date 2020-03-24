@@ -69,7 +69,24 @@ $
 https://github.com/marketplace/actions/upload-files-to-a-github-release
   - So do the cleanup per step 3 above. Note: must delete binaries before the release may be deleted.
   - correct the yaml per the Rust example
-  
+  - Commit, tag, and push
+```
+$ git commit -a -m "fixes to wf (3)"
+[master f9cbc3a] fixes to wf (3)
+ 2 files changed, 28 insertions(+), 20 deletions(-)
+$ git tag v1.0.0
+$ git push origin --tags
+Counting objects: 6, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (6/6), 1.06 KiB | 362.00 KiB/s, done.
+Total 6 (delta 3), reused 0 (delta 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To github.com:unfoldingWord/book-package-app.git
+ * [new tag]         v1.0.0 -> v1.0.0
+$ 
+```
+
 
 
 
