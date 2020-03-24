@@ -63,6 +63,16 @@ $
   - commit/push changes without a tag
   - tag the commit locally `git tag v1.0.0`
   - push tag `git push origin --tags`
+  - note in above the tag was pushed separately from the code. **This may not work. The workflow is running, but it shows "master" instead of v1.0.0 as it did before. It also shows my commit message as the name of workflow instead of the one in the yaml workflow file.**
+
+4. Problem: since the workflow splits per platform, I ended up with two "Release v1.0.0" releases. Surprised that is allowed. Oh well. Found this link used by a Rust app that does what I need:
+https://github.com/marketplace/actions/upload-files-to-a-github-release
+  - So do the cleanup per step 3 above. Note: must delete binaries before the release may be deleted.
+  - correct the yaml per the Rust example
+  
+
+
+
 
 
 ## Electron Packaging

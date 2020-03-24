@@ -9,11 +9,24 @@ jobs:
   build:
     # Job name is build-electron-from-react-web
     name: build-electron-from-react-web
+
     # This job runs on Linux
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: book-package-app_1.0.0_amd64.deb
+            asset_name: book-package-app_1.0.0_amd64.deb
+          - os: windows-latest
+            artifact_name: "book-package-app Setup 1.0.0.exe"
+            asset_name: "book-package-app Setup 1.0.0.exe"
+          #- os: macos-latest
+          #  artifact_name: mything
+          #  asset_name: mything-macos-amd64
+    
+    # steps
     steps:
       - name: echo Starting
         run: echo The time is `date`
@@ -83,30 +96,15 @@ jobs:
           draft: true # set to false in order to publish automatically
           prerelease: true # set to false normally, unless you use a beta process
 
-      # with the release created, let's upload the windows asset
-      # Note that the version string used is in the package.json
-      # used by electron (not! the one used by BPA itself).
-      # Edit version in copy at ./public/electron-package.json
-      - name: Upload Windows Release Asset
-        if: matrix.os == 'windows-latest'
+      # with the release created, let's upload the assets
+      - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: "./electron/dist/book-package-app Setup 1.0.0.exe"
-          asset_name: BPA-Windows
-          asset_content_type: application/octet-stream
-
-      - name: Upload Ubuntu Release Asset
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: "./electron/dist/book-package-app_1.0.0_amd64.deb"
-          asset_name: BPA-Windows
+          asset_path: "./electron/dist/${{ matrix.artifact_name }}"
+          asset_name: ${{ matrix.asset_name }}
           asset_content_type: application/octet-stream
 
       - name: Done!
