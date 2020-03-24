@@ -1,7 +1,9 @@
-name: build electron from react web
+name: build and release electron from react web
 
 on:
-  push
+  push:
+    tags:
+      - 'v*' # any push with a tag in semver format
     
 jobs:
   build:
@@ -68,5 +70,46 @@ jobs:
         run: ls ./dist
         working-directory: ./electron
         shell: bash
+      
+      # at this point, we have the asset... let's proceed to create the release 
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true # set to false in order to publish automatically
+          prerelease: true # set to false normally, unless you use a beta process
+
+      # with the release created, let's upload the windows asset
+      # Note that the version string used is in the package.json
+      # used by electron (not! the one used by BPA itself).
+      # Edit version in copy at ./public/electron-package.json
+      - name: Upload Windows Release Asset
+        if: matrix.os == 'windows-latest'
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: "./electron/dist/book-package-app Setup 1.0.0.exe"
+          asset_name: BPA-Windows
+          asset_content_type: application/octet-stream
+
+      - name: Upload Ubuntu Release Asset
+        if: matrix.os == 'ubuntu-latest'
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: "book-package-app_1.0.0_amd64.deb"
+          asset_name: BPA-Windows
+          asset_content_type: application/octet-stream
+
       - name: Done!
         run: echo The time is `date`

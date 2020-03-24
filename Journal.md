@@ -1,237 +1,25 @@
 # Journal
 
-## Graveyard
+## Release and Assets
 
-This is `electron/package.json`; maintain a copy in `public/electron-package.json`:
-```
-{
-  "name": "book-package-app",
-  "version": "1.0.0",
-  "description": "Book Package Flow and Optimization",
-  "main": "index.js",
-  "homepage": "https://unfoldingword.github.io/book-package-app/",
-  "scripts": {
-    "electron:start": "electron ./",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder --win --linux --x64"
-  },
-  "build": {
-    "appId": "org.unfoldingword.book-package-app",
-    "linux": {
-      "target": "deb",
-      "icon": "app/favicon-32x32.png",
-      "maintainer": "unfoldingword.org"
-    },
-    "win": {
-      "target": "msi",
-      "icon": "app/android-chrome-512x512.png"
-    }
-  },
-  "dependencies": {
-    "@capacitor/electron": "^1.5.1",
-    "electron-is-dev": "^1.1.0"
-  },
-  "devDependencies": {
-    "electron": "^7.0.0",
-    "electron-builder": "^22.4.1"
-  },
-  "keywords": [
-    "capacitor",
-    "electron"
-  ],
-  "author": {
-    "name": "unfoldingword.org",
-    "email": "finance@unfoldingword.org"
-  },
-  "license": "ISC"
-}
-```
+This workflow captures the essentials of what I need to include:
+https://github.com/DragonComputer/Dragonfire/blob/d0962866a5c589edc0d45fd2c07204ec3747500b/.github/workflows/release.yml
+
+Note these lines which create a release.
+
+1. Here is the action I need: https://github.com/marketplace/actions/create-a-release
+
+2. Here is the way to upload assets: https://github.com/actions/upload-release-asset
+
+*notes*
+- made edits to workflow; let's push with no tag and see what happens. 
+  - Expect: it will not start because no tag is provided.
 
 ## Electron Packaging
 
-This series of instructions are from the very beginning, starting at cloning the repo. This will be close to what a Github Action workflow will need to do.
+The process is captured in script `build-electron.sh`. I have annotated the script to explain it.
 
-Once capacitor is configured, the changes will be committed/pushed. So one difference is that capcitor itself will not need to be added to the project as is done below.
-
-Step 1. clone the repo and step into the cloned folder
-```
-$ git clone git@github.com:unfoldingWord/book-package-app.git
-Cloning into 'book-package-app'...
-remote: Enumerating objects: 18, done.
-remote: Counting objects: 100% (18/18), done.
-remote: Compressing objects: 100% (18/18), done.
-remote: Total 557 (delta 1), reused 6 (delta 0), pack-reused 539
-Receiving objects: 100% (557/557), 8.91 MiB | 654.00 KiB/s, done.
-Resolving deltas: 100% (359/359), done.
-$ cd book-package-app
-$
-```
-
-Step 2. get the dependencies
-```
-$ yarn
-yarn install v1.22.4
-[1/4] Resolving packages...
-[2/4] Fetching packages...
-... elided ...
-[4/4] Building fresh packages...
-Done in 164.84s.
-$
-```
-
-Step 3. add Capacitor
-```
-$ yarn add @capacitor/core @capacitor/cli
-yarn add v1.22.4
-[1/4] Resolving packages...
-[2/4] Fetching packages...
-... elided ... 
-[4/4] Building fresh packages...
-
-success Saved lockfile.
-success Saved 9 new dependencies.
-info Direct dependencies
-├─ @capacitor/cli@1.5.1
-└─ @capacitor/core@1.5.1
-info All dependencies
-├─ @capacitor/cli@1.5.1
-├─ @capacitor/core@1.5.1
-├─ cli-spinners@1.3.1
-├─ compare-versions@3.6.0
-├─ ora@1.4.0
-├─ plist@3.0.1
-├─ xml2js@0.4.23
-├─ xmlbuilder@9.0.7
-└─ xmldom@0.1.31
-Done in 33.67s.
-$
-```
-
-Step 4. Initialize capacitor
-```
-$ npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
-
-
-*   Your Capacitor project is ready to go!  *
-
-Add platforms using "npx cap add":
-
-  npx cap add android
-  npx cap add ios
-  npx cap add electron
-
-Follow the Developer Workflow guide to get building:
-https://capacitor.ionicframework.com/docs/basics/workflow
-
-$
-```
-
-Step 5. Removed
-
-Step 6. Build the app (could be done before Step 5)
-```
-$ yarn build
-yarn run v1.22.4
-$ react-scripts build
-Creating an optimized production build...
-Compiled successfully.
-
-File sizes after gzip:
-
-  513.62 KB  build\static\js\2.f8631465.chunk.js
-  10.63 KB   build\static\js\main.06ac67eb.chunk.js
-  782 B      build\static\js\runtime-main.d8cbb9cd.js
-  284 B      build\static\css\main.2f6ca397.chunk.css
-
-The project was built assuming it is hosted at /book-package-app/.
-You can control this with the homepage field in your package.json.
-
-The build folder is ready to be deployed.
-To publish it at https://unfoldingword.github.io/book-package-app/ , run:
-
-  yarn run deploy
-
-Find out more about deployment here:
-
-  bit.ly/CRA-deploy
-
-Done in 124.73s.
-$
-```
-
-Step 7. Add electron as a target platform
-```
-$ npx cap add electron
-$ # note no output, but does create folder "electron"
-```
-
-Step 8. Update the `package.json` file in the electron folder:
-- update app name and description
-- from:
-```
-  "name": "capacitor-app",
-  "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
-```
-- to:
-```
-  "name": "book-package-app",
-  "version": "1.0.0",
-  "description": "Book Package App",
-```
-- using this:
-```
-cd electron
-sed -e "s/capacitor-app/book-package-app/" -e "s/An Amazing Capacitor App/Book Package App/" < package.json > x && mv x package.json
-```
-
-Step 9. Copy the build folder to the platform target(s). In this case only 'electron'.
-```
-$ npx cap copy
-$ # note no output
-```
-
-Step 10. The web app has an `index.html` file that has references that will not work with electron. In particular, all references that begin with "/book-package-app/" must be altered to "./".
-```
-$ cd electron/app
-$ sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html
-```
-
-Step 11. Install the packager for electron and verify:
-```
-$ npm install electron-packager
-$ electron-packager --version
-Electron Packager 14.2.1
-Node v10.16.3
-Host Operating system: win32 10.0.18362 (x64)
-$
-```
-
-Step 12. Run the packager. Note that when run on a local computer, it can only generate OS/Arch combinations compatible with the local computer. Suppose you have a Win10 computer, then it can generate Windows and Linux OS (even for different architecture, since there no "assembly" code involved)
-```
-$ cd electron/
-$ pwd
-/c/Users/mando/Projects/cecil.new/book-package-app/electron
-$ electron-packager . --all
-Packaging app for platform linux ia32 using electron v7.1.14
-Packaging app for platform win32 ia32 using electron v7.1.14
-Packaging app for platform linux x64 using electron v7.1.14
-Skipping win32 x64 (output dir already exists, use --overwrite to force)
-Packaging app for platform linux armv7l using electron v7.1.14
-Packaging app for platform linux arm64 using electron v7.1.14
-Packaging app for platform win32 arm64 using electron v7.1.14
-Cannot create symlinks (on Windows hosts, it requires admin privileges); skipping darwin platform        
-Cannot create symlinks (on Windows hosts, it requires admin privileges); skipping mas platform
-Wrote new apps to:
-C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-ia32
-C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-win32-ia32
-C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-x64
-true
-C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-armv7l
-C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-linux-arm64
-C:\Users\mando\Projects\cecil.new\book-package-app\electron\book-package-app-win32-arm64
-$
-```
+The process is replicated in the Github Actions workflow. This is in `.github/workflows/build-electron.yml`.
 
 ## Electron Installers
 
