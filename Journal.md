@@ -87,7 +87,16 @@ To github.com:unfoldingWord/book-package-app.git
 $ 
 ```
 
-
+5. Solution in #4 above did not work as expected. Next plan is:
+  - make two workflows, both triggered the same
+  - new one will just create the release, nothing else... should take seconds
+  - the existing one is modified to remove the create release, but will retain uploading the assets.
+  - First cleanup: 
+    - delete the release draft on Github itself
+    - delete the tag locally `git tag -d v1.0.0`
+    - delete the tag remotely `git push origin --delete v1.0.0`
+  - Expect: uploading will always be to the open, draft release
+  - Actual: the action (svenstaro/upload-release-action@v1-release) uploaded the assets to the tag, not the release. hmmm.
 
 
 
