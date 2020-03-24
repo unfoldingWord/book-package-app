@@ -28,8 +28,6 @@ jobs:
     
     # steps
     steps:
-      - name: echo Starting
-        run: echo The time is `date`
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Use node
@@ -84,28 +82,11 @@ jobs:
         working-directory: ./electron
         shell: bash
       
-      # at this point, we have the asset... let's proceed to create the release 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true # set to false in order to publish automatically
-          prerelease: true # set to false normally, unless you use a beta process
-
-      # with the release created, let's upload the assets
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: "./electron/dist/${{ matrix.artifact_name }}"
           asset_name: ${{ matrix.asset_name }}
           asset_content_type: application/octet-stream
-
-      - name: Done!
-        run: echo The time is `date`

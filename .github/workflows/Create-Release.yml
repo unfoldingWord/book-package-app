@@ -1,0 +1,22 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - 'v*' # any push with a tag in semver format
+    
+jobs:
+  build:
+    name: create-the-release
+
+    # steps
+    steps:
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true # set to false in order to publish automatically
+          prerelease: true # set to false normally, unless you use a beta process
