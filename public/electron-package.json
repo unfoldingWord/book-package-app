@@ -23,7 +23,7 @@
     "mac": {
       "category": "public.app-category.utilities",
       "target": "default",
-      "icon": "app/apple-touch-icon.png"
+      "icon": "app/android-chrome-512x512.png"
     }
   },
   "dependencies": {
