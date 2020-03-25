@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
             artifact_name: book-package-app_1.0.0_amd64.deb
@@ -22,9 +22,9 @@ jobs:
           - os: windows-latest
             artifact_name: "book-package-app Setup 1.0.0.exe"
             asset_name: "book-package-app Setup 1.0.0.exe"
-          #- os: macos-latest
-          #  artifact_name: mything
-          #  asset_name: mything-macos-amd64
+          - os: macos-latest
+            artifact_name: book-package-app
+            asset_name: book-package-app
     
     # steps
     steps:

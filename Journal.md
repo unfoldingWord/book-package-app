@@ -1,5 +1,17 @@
 # Journal
 
+## 2020-03-25 MacOS --or-- how to cut a new release
+
+- Made minimum changes to `./public/electron-package.json` per https://www.electron.build/configuration/mac; the below, plus bumped version `1.0.1`.
+```
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "default",
+      "icon": "app/apple-touch-icon.png"
+    }
+```
+- Made changes to Github Actions (GA) workflow, adding entries for `macos`
+
 ## Release and Assets
 
 This workflow captures the essentials of what I need to include:
@@ -97,6 +109,8 @@ $
     - delete the tag remotely `git push origin --delete v1.0.0`
   - Expect: uploading will always be to the open, draft release
   - Actual: the action (svenstaro/upload-release-action@v1-release) uploaded the assets to the tag, not the release. hmmm.
+
+6. By uploading assets to the tag, I can then manually create the release based on that tag and assets. Did this for release v1.0.0.
 
 
 

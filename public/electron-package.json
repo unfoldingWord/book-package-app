@@ -1,6 +1,6 @@
 {
   "name": "book-package-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Book Package Flow and Optimization",
   "main": "index.js",
   "homepage": "https://unfoldingword.github.io/book-package-app/",
@@ -19,6 +19,11 @@
     "win": {
       "target": "nsis",
       "icon": "app/android-chrome-512x512.png"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "default",
+      "icon": "app/apple-touch-icon.png"
     }
   },
   "dependencies": {
