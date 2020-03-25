@@ -10,7 +10,7 @@ jobs:
     # Job name is build-electron-from-react-web
     name: build-electron-from-react-web
     env:
-      VERSION: ${{ echo ${{ github.ref }} | cut -c12- }}
+      VERSION: ${{ $(echo ${{ github.ref }} | cut -c12-) }}
 
     # This job runs on Linux
     runs-on: ${{ matrix.os }}
