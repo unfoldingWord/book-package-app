@@ -19,11 +19,11 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            artifact_name: book-package-app_${{ env.VERSION }}_amd64.deb
-            asset_name: book-package-app_${{ env.VERSION }}_amd64.deb
+            artifact_name: book-package-app_${VERSION}_amd64.deb
+            asset_name: book-package-app_${VERSION}_amd64.deb
           - os: windows-latest
-            artifact_name: "book-package-app Setup ${{ env.VERSION }}.exe"
-            asset_name: "book-package-app Setup ${{ env.VERSION }}.exe"
+            artifact_name: "book-package-app Setup ${VERSION}.exe"
+            asset_name: "book-package-app Setup ${VERSION}.exe"
           - os: macos-latest
             artifact_name: book-package-app
             asset_name: book-package-app
@@ -37,7 +37,7 @@ jobs:
           echo OS is ${{ matrix.os }}
           echo Asset Name is ${{ matrix.asset_name }}
           echo Artifact Name is ${{ matrix.artifact_name }}
-          echo Version is ${{ env.VERSION }}
+          echo Version is $VERSION
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Use node
