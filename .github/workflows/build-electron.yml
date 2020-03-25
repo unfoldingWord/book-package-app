@@ -7,28 +7,26 @@ on:
     
 jobs:
   build:
-    # Job name is build-electron-from-react-web
     name: build-electron-from-react-web
     env:
       VERSION: 1.0.1
 
-    # This job runs on Linux
+    # update versions below
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            artifact_name: book-package-app_${VERSION}_amd64.deb
-            asset_name: book-package-app_${VERSION}_amd64.deb
+            artifact_name: book-package-app_1.0.1_amd64.deb
+            asset_name: book-package-app_1.0.1_amd64.deb
           - os: windows-latest
-            artifact_name: "book-package-app Setup ${VERSION}.exe"
-            asset_name: "book-package-app Setup ${VERSION}.exe"
+            artifact_name: "book-package-app Setup 1.0.1.exe"
+            asset_name: "book-package-app Setup 1.0.1.exe"
           - os: macos-latest
             artifact_name: book-package-app
             asset_name: book-package-app
     
-    # steps
     steps:
       - name: Show Env
         run: |
@@ -38,13 +36,19 @@ jobs:
           echo Asset Name is ${{ matrix.asset_name }}
           echo Artifact Name is ${{ matrix.artifact_name }}
           echo Version is $VERSION
+        shell: bash
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Use node
         uses: actions/setup-node@v1
-      - name: Show repo after checkout
-        run: ls
-      - name: Run yarn to retrieve dependencies
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+      - name: Yarn install dependencies
         run: yarn
       - name: Yarn - add capacitor
         run: yarn add @capacitor/core @capacitor/cli
