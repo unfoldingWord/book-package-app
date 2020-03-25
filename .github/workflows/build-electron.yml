@@ -9,6 +9,8 @@ jobs:
   build:
     # Job name is build-electron-from-react-web
     name: build-electron-from-react-web
+    env:
+      VERSION: 1.0.1
 
     # This job runs on Linux
     runs-on: ${{ matrix.os }}
@@ -17,23 +19,25 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            artifact_name: book-package-app_1.0.0_amd64.deb
-            asset_name: book-package-app_1.0.0_amd64.deb
+            artifact_name: book-package-app_${VERSION}_amd64.deb
+            asset_name: book-package-app_${VERSION}_amd64.deb
           - os: windows-latest
-            artifact_name: "book-package-app Setup 1.0.0.exe"
-            asset_name: "book-package-app Setup 1.0.0.exe"
+            artifact_name: "book-package-app Setup ${ VERSION }.exe"
+            asset_name: "book-package-app Setup ${VERSION}.exe"
           - os: macos-latest
             artifact_name: book-package-app
             asset_name: book-package-app
     
     # steps
     steps:
+      - name: Show Env
+        run: |
+          echo Home is $HOME 
+          echo Working Directory is $GITHUB_WORKSPACE
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Use node
         uses: actions/setup-node@v1
-      - name: Show home
-        run: echo Home is $HOME and PWD is $GITHUB_WORKSPACE
       - name: Show repo after checkout
         run: ls
       - name: Run yarn to retrieve dependencies

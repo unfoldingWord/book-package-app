@@ -11,6 +11,24 @@
     }
 ```
 - Made changes to Github Actions (GA) workflow, adding entries for `macos`
+- Commit, tag, and push
+```
+$ git commit -a -m "support for macos"
+[master 13472e6] support for macos
+ 4 files changed, 47 insertions(+), 5 deletions(-)
+ create mode 100644 archive/Create-Release.yml
+$ git tag v1.0.1
+$ git push origin --tags
+Counting objects: 10, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (10/10), 1.56 KiB | 532.00 KiB/s, done.
+Total 10 (delta 5), reused 0 (delta 0)
+remote: Resolving deltas: 100% (5/5), completed with 5 local objects.
+To github.com:unfoldingWord/book-package-app.git
+ * [new tag]         v1.0.1 -> v1.0.1
+$
+```
 
 ## Release and Assets
 
