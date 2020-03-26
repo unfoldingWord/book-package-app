@@ -1,6 +1,17 @@
 # Journal
 
-## 2020-03-25 MacOS --or-- how to cut a new release
+## 2020-03-26 Cut a new release
+
+1. Update version in `./public/electron-package.json` (in this case 1.0.3).
+2. [optional if had to fix something] Unset the tag: `sh unset_tag.sh v1.0.3`
+3. make changes as needed
+4. commit the the changes: `git commit -a -m "blah"`
+5. tag the changes: `git tag v1.0.3`
+6. push changes and tags: `git push origin --tags`
+
+Once everything is happy, do a push to master: `git push`
+
+## 2020-03-25 MacOS
 
 - Made minimum changes to `./public/electron-package.json` per https://www.electron.build/configuration/mac; the below, plus bumped version `1.0.1`.
 ```
