@@ -21,6 +21,7 @@ jobs:
           echo Home is $HOME 
           echo Working Directory is $GITHUB_WORKSPACE
           echo OS is ${{ matrix.os }}
+          echo Version is ${GITHUB_REF##*v}
         shell: bash
       
       - name: Checkout Code
@@ -119,7 +120,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "./electron/dist/$artifactname"
-          asset_name: $assetname
+          file: "./electron/dist/${artifactname}"
+          asset_name: ${assetname}
           tag: ${{ github.ref }}
           overwrite: true
