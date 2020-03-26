@@ -24,8 +24,8 @@ jobs:
             artifact_name: "book-package-app Setup 1.0.1.exe"
             asset_name: "book-package-app Setup 1.0.1.exe"
           - os: macos-latest
-            artifact_name: book-package-app-1.0.1-mac.zip
-            asset_name: book-package-app-1.0.1-mac.zip
+            artifact_name: book-package-app-1.0.1.dmg
+            asset_name: book-package-app-1.0.1.dmg
     
     steps:
       - name: Show Env
