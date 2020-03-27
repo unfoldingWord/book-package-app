@@ -1,5 +1,15 @@
 # Journal
 
+## 2020-03-27 Cut Electron Release 1.0.4 
+
+1. Update version in `./public/electron-package.json` (in this case 1.0.4).
+2. No changes needed. This patch release is to test whether caching is working in the Github Actions Workflow.
+3. Commit `git commit -a -m "bump to v1.0.4"`
+4. Tag: `git tag v1.0.4`
+5. Push changes and tags: `git push && git push --tags`
+
+NOTE: Caching still not working... not sure why
+
 ## 2020-03-26 Cut a new release
 
 1. Update version in `./public/electron-package.json` (in this case 1.0.3).
