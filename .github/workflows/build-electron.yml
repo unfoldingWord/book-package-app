@@ -61,7 +61,7 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-          path: ~/node_modules
+          path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}
       
       # install capacitor and electron dependencies
