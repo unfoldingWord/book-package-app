@@ -1,6 +1,6 @@
 {
   "name": "book-package-app",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Book Package Flow and Optimization",
   "main": "index.js",
   "homepage": "https://unfoldingword.github.io/book-package-app/",

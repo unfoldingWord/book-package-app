@@ -1,5 +1,25 @@
 # Journal
 
+## 2020-03-30 Issue #20: To be version 1.0.6
+
+When code is running as standalone Electron app, the copy link button does not work in a reasonable way. To fix, examine link before putting on clipboard and if it begins with "file", then substitute the default base (origin and path).
+
+At this point, make app and electron have the same version: 1.0.6. By updating
+- `package.json` 
+- `./public/electron-package.json`
+
+Now, commit, tag, and push:
+```
+$ git commit -a -m "issue 20, version 1.0.6"
+$ git tag v1.0.6
+$ git push && git push --tags
+```
+
+## 2020-03-28 Caching of node modules with Github Actions
+
+Decided to try partial key matching with a new patch release. Turns out there is an issue:
+https://github.com/actions/cache/issues/231
+
 ## 2020-03-27 Cut Electron Release 1.0.4 
 
 1. Update version in `./public/electron-package.json` (in this case 1.0.4).

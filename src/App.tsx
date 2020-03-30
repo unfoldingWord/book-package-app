@@ -324,6 +324,7 @@ export default function App() {
   };
 
   async function handlePermalink(event: React.MouseEvent<HTMLButtonElement>) {
+    const defBase = "https://unfoldingword.github.io/book-package-app/";
     let states = Object.keys(state);
     let ids: string[] = [];
     for( let i=0; i < states.length; i++) {
@@ -339,6 +340,9 @@ export default function App() {
     const pathname = window.location.pathname;
     const qstring  = '?books=';
     let url = origin+pathname+qstring+ids.join(',');
+    if ( origin.startsWith("file") ) {
+      url = defBase+qstring+ids.join(',');
+    }
     copyToClipboard(url);
     setAnchorEl(event.currentTarget);
   }
