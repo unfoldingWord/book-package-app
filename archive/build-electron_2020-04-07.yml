@@ -1,0 +1,131 @@
+name: build and release electron from react web
+
+on:
+  push:
+    tags:
+      - 'v*' # any push with a tag in semver format
+    
+jobs:
+  build:
+    name: build-electron-from-react-web
+
+    # update versions below
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Show Env
+        run: |
+          echo Home is $HOME 
+          echo Working Directory is $GITHUB_WORKSPACE
+          echo OS is ${{ matrix.os }}
+          echo Version is ${GITHUB_REF##*v}
+        shell: bash
+      
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      
+      - name: set tag version
+        shell: bash
+        run: |
+          echo "::set-env name=version::${GITHUB_REF##*v}"
+
+      # set artifact and asset names for platforms
+      - name: set artifact&asset name for ubuntu
+        if: runner.os=='linux'
+        run: |
+          echo "::set-env name=artifactname::book-package-app_${version}_amd64.deb"
+          echo "::set-env name=assetname::book-package-app_${version}_amd64.deb"
+      
+      - name: set artifact&asset name for windows
+        shell: bash
+        if: runner.os=='windows'
+        run: |
+          echo "::set-env name=artifactname::book-package-app Setup ${version}.exe"
+          echo "::set-env name=assetname::book-package-app Setup ${version}.exe"        
+      
+      - name: set artifact&asset name for macos
+        shell: bash
+        if: runner.os=='macos'
+        run: |
+          echo "::set-env name=artifactname::book-package-app-${version}.dmg"
+          echo "::set-env name=assetname::book-package-app-${version}.dmg"        
+      
+      # use node and cache dependencies
+      - name: Use node
+        uses: actions/setup-node@v1
+      
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      
+      # install capacitor and electron dependencies
+      - name: Yarn install dependencies
+        run: yarn
+      - name: Yarn - add capacitor
+        run: yarn add @capacitor/core @capacitor/cli
+      - name: Initialize capacitor
+        run: npx cap init --web-dir "build" "book-package-app" "org.unfoldingword.BookPackageApp"
+      - name: Yarn - build
+        run: yarn build
+      - name: npx cap add electron
+        run: npx cap add electron
+      - name: show repo after add electron
+        run: ls 
+      
+      # fix electron configuration and etc.
+      - name: fix electron package.json 
+        run: |
+          cp ./public/electron-package.json ./electron/package.json
+          cp ./public/android-chrome-512x512.png ./electron/splash_assets/splash.png
+      - name: fix electron index.html
+        run: sed -e "s#/book-package-app/#./#g" < index.html > x && mv x index.html
+        working-directory: ./electron/app
+        shell: bash
+      - name: copy index.js to app
+        run: cp index.js app
+        working-directory: ./electron
+        shell: bash
+      
+      # install electron specific packages
+      - name: add electron and electron-builder
+        run: |
+          yarn add electron
+          yarn add electron-builder 
+        working-directory: ./electron
+      
+      # build the electron from react web 
+      - name: run electron-builder
+        run: $GITHUB_WORKSPACE/$PKG/electron-builder
+        working-directory: ./electron
+        shell: bash
+        env:
+          PKG: electron/node_modules/.bin
+      
+      # show the platform installers
+      - name: show platforms
+        run: ls ./dist
+        working-directory: ./electron
+        shell: bash
+      
+      # upload the assets to the release
+      - name: Upload Release Assets
+        uses: svenstaro/upload-release-action@v1-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "./electron/dist/${{ env.artifactname }}"
+          asset_name: ${{ env.assetname }}
+          tag: ${{ github.ref }}
+          overwrite: true
