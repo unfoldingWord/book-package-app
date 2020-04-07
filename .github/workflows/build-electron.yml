@@ -36,7 +36,7 @@ jobs:
         uses: unfoldingWord-box3/react-to-electron-action@v1.1.0
         with:
           appname: 'book-package-app'
-          appid: 'io.github.unfoldingword.book-package-app'
+          appid: 'io.github.unfoldingword.BookPackageApp'
           path: 'book-package-app'
           version: '1.0.7'
       
