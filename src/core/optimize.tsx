@@ -145,6 +145,9 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     let round:number = 0;
     let optBooks: string[] = [];
     let optCounts: number[] = [];
+    let optUtaMap = new Map<string,string[]>();
+    let optUtwMap = new Map<string,string[]>();
+
     for (let n=0; n < booksOpt.length; n++ ) {
         round++;
         console.log("Begin round:",round);
@@ -246,30 +249,36 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         let data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
         let articles = Object.keys(dam);
+        let optUta: string[] = [];
 
         for (let j=0; j< articles.length; j++) {
             // first check to see if this article is in the done list
             // if so skip it
             if ( doneArticleMap.has(articles[j]) ) { continue;}
+            optUta.push(articles[j])
             let articleCount = dam[articles[j]].total;
             // now add to map. dups expected
             doneArticleMap.set(articles[j], articleCount);
         }
+       optUtaMap.set(roundWinnerBook,optUta);
 
         // get the UTW articles and their counts
         dbkey = "utw-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);
         dam = data.detail_article_map;
         articles = Object.keys(dam);
+        let optUtw: string[] = [];
 
         for (let j=0; j< articles.length; j++) {
             // first check to see if this article is in the done list
             // if so skip it
             if ( doneArticleMap.has(articles[j]) ) { continue;}
+            optUtw.push(articles[j]);
             let articleCount = dam[articles[j]].total;
             // now add to map
             doneArticleMap.set(articles[j], articleCount);
         }
+        optUtwMap.set(roundWinnerBook,optUtw);
     }
     setOpt (
         <div>
@@ -304,6 +313,24 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                         <Typography key={t}>
                         {t} - Adjusted Book Package Word Count: {optCounts[i].toLocaleString()}
                         </Typography>
+                        <ul>
+                        {optUtaMap.get(t)?.map( uta => ( 
+                            <li>
+                                <Typography>
+                                UTA -- {uta} 
+                                </Typography>                    
+                            </li>
+                        ))}
+                        </ul>
+                        <ul>
+                        {optUtwMap.get(t)?.map( utw => ( 
+                            <li>
+                            <Typography>
+                                UTW -- {utw} 
+                            </Typography>                    
+                            </li>
+                        ))}
+                        </ul>
                     </li>
                 ) )}
                 </ol>
