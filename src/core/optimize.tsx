@@ -1,5 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import TreeView from '@material-ui/lab/TreeView';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import TreeItem from '@material-ui/lab/TreeItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import * as dbsetup from 'book-package-rcl';
 import * as books from './books';
@@ -8,7 +12,10 @@ export interface bpStateIF { [x: string]: boolean[]; };
   
 const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
 
+ 
+
 export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.SetStateAction<JSX.Element>> ) {
+
     setOpt(<CircularProgress/>);
     // extract the books in the package
     const allbooks = Object.keys(state);
@@ -248,6 +255,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         let dbkey = "uta-"+bkid;
         let data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
+        let refmap = data.summary_ref_map;
         let articles = Object.keys(dam);
         let optUta: string[] = [];
 
@@ -255,7 +263,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // first check to see if this article is in the done list
             // if so skip it
             if ( doneArticleMap.has(articles[j]) ) { continue;}
-            optUta.push(articles[j])
+            optUta.push(articles[j] + ' (References: ' + refmap[articles[j]] + ')')
             let articleCount = dam[articles[j]].total;
             // now add to map. dups expected
             doneArticleMap.set(articles[j], articleCount);
@@ -266,6 +274,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         dbkey = "utw-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);
         dam = data.detail_article_map;
+        refmap = data.summary_ref_map;
         articles = Object.keys(dam);
         let optUtw: string[] = [];
 
@@ -273,7 +282,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // first check to see if this article is in the done list
             // if so skip it
             if ( doneArticleMap.has(articles[j]) ) { continue;}
-            optUtw.push(articles[j]);
+            optUtw.push(articles[j] + ' (References: ' + refmap[articles[j]] + ')')
             let articleCount = dam[articles[j]].total;
             // now add to map
             doneArticleMap.set(articles[j], articleCount);
@@ -307,30 +316,47 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                 Then proceed in this order:
                 </Typography>
                 <div>
+
                 <ol>
                 {optBooks.map( (t,i) => (
                     <li>
                         <Typography key={t}>
                         {t} - Adjusted Book Package Word Count: {optCounts[i].toLocaleString()}
                         </Typography>
-                        <ul>
-                        {optUtaMap.get(t)?.map( uta => ( 
-                            <li>
-                                <Typography>
-                                UTA -- {uta} 
-                                </Typography>                    
-                            </li>
-                        ))}
-                        </ul>
-                        <ul>
-                        {optUtwMap.get(t)?.map( utw => ( 
-                            <li>
-                            <Typography>
-                                UTW -- {utw} 
-                            </Typography>                    
-                            </li>
-                        ))}
-                        </ul>
+                        <TreeView
+                            defaultCollapseIcon={<ExpandMoreIcon />}
+                            defaultExpandIcon={<ChevronRightIcon />}
+                        >
+                            <TreeItem nodeId="1" label='Unique UTA modules'>
+                                <ul>
+                                {optUtaMap.get(t)?.map( uta => ( 
+                                    <li>
+                                        <Typography>
+                                        {uta} 
+                                        </Typography>                    
+                                    </li>
+                                ))}
+                                </ul>
+                            </TreeItem>
+                        </TreeView>
+
+                        <TreeView
+                            defaultCollapseIcon={<ExpandMoreIcon />}
+                            defaultExpandIcon={<ChevronRightIcon />}
+                        >
+                            <TreeItem nodeId="1" label='Unique UTW modules'>
+                                <ul>
+                                {optUtwMap.get(t)?.map( utw => ( 
+                                    <li>
+                                    <Typography>
+                                    {utw} 
+                                    </Typography>                    
+                                    </li>
+                                ))}
+                                </ul>
+                                </TreeItem>
+                        </TreeView>
+
                     </li>
                 ) )}
                 </ol>
@@ -342,12 +368,3 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     )
 }
 
-
-
-
-/*   
-
-
-                            {t} (Book Package Word Count: {(bookCountTotalsPreOpt.get(books.bookIdByTitle(t)) as number).toLocaleString()})
-
-*/
