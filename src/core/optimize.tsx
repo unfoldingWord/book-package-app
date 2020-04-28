@@ -5,6 +5,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Link } from '@material-ui/core';
+
 import * as dbsetup from 'book-package-rcl';
 import * as books from './books';
 
@@ -12,7 +14,19 @@ export interface bpStateIF { [x: string]: boolean[]; };
   
 const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
 
- 
+function convertUtaToLink(lnk: string) {
+    const path = 'https://git.door43.org/unfoldingWord/en_ta/src/branch/master/translate/';
+    return path+lnk;
+}
+
+export function convertUtwToLink(lnk: string) {
+    const path = 'https://git.door43.org/unfoldingWord/en_tw/src/branch/master';
+    let s;
+    s = lnk;
+    s = s.replace(/^rc.*dict(\/.*$)/, path+'$1.md');
+    return s;
+}
+
 
 export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.SetStateAction<JSX.Element>> ) {
 
@@ -149,11 +163,16 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         round, there will be two books left to do.
 
     */
+    interface ObjectLiteral {
+        [key: string]: any;
+    }    
     let round:number = 0;
     let optBooks: string[] = [];
     let optCounts: number[] = [];
     let optUtaMap = new Map<string,string[]>();
     let optUtwMap = new Map<string,string[]>();
+    let refmapUta: ObjectLiteral = { };
+    let refmapUtw: ObjectLiteral = { };
 
     for (let n=0; n < booksOpt.length; n++ ) {
         round++;
@@ -255,7 +274,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         let dbkey = "uta-"+bkid;
         let data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
-        let refmap = data.summary_ref_map;
+        refmapUta = data.summary_ref_map;
         let articles = Object.keys(dam);
         let optUta: string[] = [];
 
@@ -263,18 +282,18 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // first check to see if this article is in the done list
             // if so skip it
             if ( doneArticleMap.has(articles[j]) ) { continue;}
-            optUta.push(articles[j] + ' (References: ' + refmap[articles[j]] + ')')
+            optUta.push(articles[j] );
             let articleCount = dam[articles[j]].total;
             // now add to map. dups expected
             doneArticleMap.set(articles[j], articleCount);
         }
-       optUtaMap.set(roundWinnerBook,optUta);
+        optUtaMap.set(roundWinnerBook,optUta);
 
         // get the UTW articles and their counts
         dbkey = "utw-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);
         dam = data.detail_article_map;
-        refmap = data.summary_ref_map;
+        refmapUtw = data.summary_ref_map;
         articles = Object.keys(dam);
         let optUtw: string[] = [];
 
@@ -282,7 +301,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // first check to see if this article is in the done list
             // if so skip it
             if ( doneArticleMap.has(articles[j]) ) { continue;}
-            optUtw.push(articles[j] + ' (References: ' + refmap[articles[j]] + ')')
+            optUtw.push(articles[j] );
             let articleCount = dam[articles[j]].total;
             // now add to map
             doneArticleMap.set(articles[j], articleCount);
@@ -332,7 +351,10 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                                 {optUtaMap.get(t)?.map( uta => ( 
                                     <li>
                                         <Typography>
-                                        {uta} 
+                                            <Link href={convertUtaToLink(uta)} target="_blank" rel="noopener" >
+                                            {uta}
+                                            </Link>
+                                            &nbsp;&nbsp;(References: {refmapUta[uta]})
                                         </Typography>                    
                                     </li>
                                 ))}
@@ -349,7 +371,10 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                                 {optUtwMap.get(t)?.map( utw => ( 
                                     <li>
                                     <Typography>
-                                    {utw} 
+                                        <Link href={convertUtwToLink(utw)} target="_blank" rel="noopener" >
+                                        {utw} 
+                                        </Link>
+                                        &nbsp;&nbsp;(References: {refmapUtw[utw]})
                                     </Typography>                    
                                     </li>
                                 ))}
