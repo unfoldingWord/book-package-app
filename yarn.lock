@@ -2733,10 +2733,10 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-book-package-rcl@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.3.1.tgz#397e1a71f0bf2e48791df48ec8dc4eea1028f05c"
-  integrity sha512-8qrLdEPxeBCcZ3atB43PPq/2jHfs08/6gEiBmKgh9lM2BNqd8stWJvTXlAY7dcebVpPCPuWZhNl0GUgW3BlzzA==
+book-package-rcl@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.3.2.tgz#cc88a323368ef66dd1646b5bd4c2645b9c037892"
+  integrity sha512-AePr+40rwimSS+YFRULG4W1QwJjUB84D1R0jQt4OjMhQfY07M5UNqDfO/nfWUZGO23MNknOUpnlk0IQBR7im6g==
   dependencies:
     "@date-io/core" "^1.3.6"
     "@material-ui/core" "^4.9.4"
@@ -2760,7 +2760,7 @@ book-package-rcl@^1.3.1:
     serialize-javascript "^2.1.2"
     url-loader "^2.1.0"
     usfm-js "^2.0.0"
-    uw-word-count "^0.1.2"
+    uw-word-count "^1.0.0"
 
 boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
@@ -12663,10 +12663,10 @@ uuid@^3.0.1, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
 
-uw-word-count@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/uw-word-count/-/uw-word-count-0.1.2.tgz#071b136b1b1cb23e1ef84338c65e9e518caffc76"
-  integrity sha512-1fH5IzVy/W5jfT7El2rSkVyUj221SO1az8AXP3l7ZgDX0Wy0wK4mNpSsCDhukJEGhXLNFdeD0eXeTZqbbncXkQ==
+uw-word-count@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/uw-word-count/-/uw-word-count-1.0.0.tgz#2624c510dfe0d16830b66c26099ce1211071b1a0"
+  integrity sha512-HnHlYz6Dy8yb3szrS11NkI0R4M3Ii+VYb05vuC8ocBN/slPUwz/yXdyNiaJXHNW7qagQpUm63PZSESw8VY04qw==
   dependencies:
     "@date-io/core" "^1.3.6"
     "@material-ui/core" "^4.5.1"
