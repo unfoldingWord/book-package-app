@@ -2733,10 +2733,10 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-book-package-rcl@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.3.2.tgz#cc88a323368ef66dd1646b5bd4c2645b9c037892"
-  integrity sha512-AePr+40rwimSS+YFRULG4W1QwJjUB84D1R0jQt4OjMhQfY07M5UNqDfO/nfWUZGO23MNknOUpnlk0IQBR7im6g==
+book-package-rcl@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.3.3.tgz#d502d9dde34e7156f81a8e206a542765ac373cb7"
+  integrity sha512-3hAAUyXtGOWfOZYI4EF55VCcfoAZgvx9CipaQN9Vb4F/LZw+5HyhhbYMn4jnJFwx6t/JvGYSKkkvEwT3yE/j6A==
   dependencies:
     "@date-io/core" "^1.3.6"
     "@material-ui/core" "^4.9.4"
@@ -2757,7 +2757,7 @@ book-package-rcl@^1.3.2:
     react "^16.12.0"
     react-dom "^16.12.0"
     react-styleguidist "^9.1.14"
-    serialize-javascript "^2.1.2"
+    serialize-javascript "^3.1.0"
     url-loader "^2.1.0"
     usfm-js "^2.0.0"
     uw-word-count "^1.0.0"
@@ -10216,7 +10216,7 @@ ramda@0.24.1:
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.24.1.tgz#c3b7755197f35b8dc3502228262c4c91ddb6b857"
   integrity sha1-w7d1UZfzW43DUCIoJixMkd22uFc=
 
-randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
+randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5, randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
   integrity sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==
@@ -11326,6 +11326,13 @@ serialize-javascript@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-2.1.2.tgz#ecec53b0e0317bdc95ef76ab7074b7384785fa61"
   integrity sha512-rs9OggEUF0V4jUSecXazOYsLfu7OGK2qIn3c7IPBiffz32XniEp/TX9Xmc9LQfK2nQ2QKHvZ2oygKUGU0lG4jQ==
+
+serialize-javascript@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-3.1.0.tgz#8bf3a9170712664ef2561b44b691eafe399214ea"
+  integrity sha512-JIJT1DGiWmIKhzRsG91aS6Ze4sFUrYbltlkg2onR5OrnNM02Kl/hnY/T4FN2omvyeBbQmMJv+K4cPOpGzOTFBg==
+  dependencies:
+    randombytes "^2.1.0"
 
 serve-index@^1.9.1:
   version "1.9.1"
