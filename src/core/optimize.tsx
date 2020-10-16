@@ -11,6 +11,10 @@ import * as dbsetup from 'book-package-rcl';
 import * as books from './books';
 
 export interface bpStateIF { [x: string]: boolean[]; };
+interface ObjectLiteral {
+    [key: string]: any;
+} 
+
   
 const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
 
@@ -51,6 +55,11 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         let bkid = books.bookIdByTitle(bk);
         bklist.push(bkid);
         for (let res of resourcePrefixes) {
+            if ( bkid === 'obs' ) {
+                if (res === 'uta-' || res === 'ult-' || res === 'ust-' ) {
+                    continue; // these resources are not present for OBS
+                }
+            }
             let dbkey = res+bkid;
             let data = await dbsetup.bpstore.getItem(dbkey);
             let rescount = data.total;
@@ -83,6 +92,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     for (let i=0; i < booksDone.length; i++) {
         // get the UTA articles and their counts
         let bkid = books.bookIdByTitle(booksDone[i]);
+        if ( bkid === 'obs' ) continue; // not used in OBS
         let dbkey = "uta-"+bkid;
         let data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
@@ -129,14 +139,16 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         data  = await dbsetup.bpstore.getItem(dbkey);
         resourceTotal = data.total;
         doneGrandTotal = doneGrandTotal + resourceTotal;
-        dbkey = "ult-"+bkid;
-        data  = await dbsetup.bpstore.getItem(dbkey);
-        resourceTotal = data.total;
-        doneGrandTotal = doneGrandTotal + resourceTotal;
-        dbkey = "ust-"+bkid;
-        data  = await dbsetup.bpstore.getItem(dbkey);
-        resourceTotal = data.total;
-        doneGrandTotal = doneGrandTotal + resourceTotal;
+        if ( bkid !== 'obs') {
+            dbkey = "ult-"+bkid;
+            data  = await dbsetup.bpstore.getItem(dbkey);
+            resourceTotal = data.total;
+            doneGrandTotal = doneGrandTotal + resourceTotal;
+            dbkey = "ust-"+bkid;
+            data  = await dbsetup.bpstore.getItem(dbkey);
+            resourceTotal = data.total;
+            doneGrandTotal = doneGrandTotal + resourceTotal;
+        }
     }
     console.log("Done grand total is:", doneGrandTotal);
     /*
@@ -187,24 +199,30 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // The book for this round:
             newBooks.push(booksOpt[i]);
             // get the UTA articles and their counts
-            let bkid = books.bookIdByTitle(booksOpt[i]);
-            let dbkey = "uta-"+bkid;
-            let data = await dbsetup.bpstore.getItem(dbkey);
-            let dam = data.detail_article_map;
-            let articles = Object.keys(dam);
-
-            // dedup the articles for this book
-            // using the article map below
+            let articles: string[] = [];
+            let dbkey = "";
+            let data: ObjectLiteral = {};
+            let dam: ObjectLiteral = {};
             let optArticleMap = new Map<string,number>();
+            let bkid = books.bookIdByTitle(booksOpt[i]);
+            if ( bkid !== 'obs' ) {
+                let dbkey = "uta-"+bkid;
+                let data = await dbsetup.bpstore.getItem(dbkey);
+                let dam = data.detail_article_map;
+                articles = Object.keys(dam);
 
-            for (let j=0; j< articles.length; j++) {
-                // first check to see if this article is in the done list
-                // if so skip it
-                if ( doneArticleMap.has(articles[j]) ) { continue;}
-                let articleCount = dam[articles[j]].total;
-                // now add to map. dups expected
-                optArticleMap.set(articles[j], articleCount);
-                //console.log(articles[j], articleCount);
+                // dedup the articles for this book
+                // using the article map below
+
+                for (let j=0; j< articles.length; j++) {
+                    // first check to see if this article is in the done list
+                    // if so skip it
+                    if ( doneArticleMap.has(articles[j]) ) { continue;}
+                    let articleCount = dam[articles[j]].total;
+                    // now add to map. dups expected
+                    optArticleMap.set(articles[j], articleCount);
+                    //console.log(articles[j], articleCount);
+                }
             }
 
             // get the UTW articles and their counts
@@ -237,12 +255,14 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             dbkey = "utn-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
             optBookTotal = optBookTotal + data.total;
-            dbkey = "ult-"+bkid;
-            data  = await dbsetup.bpstore.getItem(dbkey);
-            optBookTotal = optBookTotal + data.total;
-            dbkey = "ust-"+bkid;
-            data  = await dbsetup.bpstore.getItem(dbkey);
-            optBookTotal = optBookTotal + data.total;
+            if ( bkid !== 'obs' ) {
+                dbkey = "ult-"+bkid;
+                data  = await dbsetup.bpstore.getItem(dbkey);
+                optBookTotal = optBookTotal + data.total;
+                dbkey = "ust-"+bkid;
+                data  = await dbsetup.bpstore.getItem(dbkey);
+                optBookTotal = optBookTotal + data.total;
+            }
             newCounts.push(optBookTotal);
             console.log("Book grand total is:", booksOpt[i], optBookTotal);
         }
@@ -271,30 +291,32 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
 
         */
         let bkid = books.bookIdByTitle(roundWinnerBook);
-        let dbkey = "uta-"+bkid;
-        let data = await dbsetup.bpstore.getItem(dbkey);
-        let dam = data.detail_article_map;
-        refmapUta = data.summary_ref_map;
-        let articles = Object.keys(dam);
-        let optUta: string[] = [];
+        if ( bkid !== 'obs' ) {
+            let dbkey = "uta-"+bkid;
+            let data = await dbsetup.bpstore.getItem(dbkey);
+            let dam = data.detail_article_map;
+            refmapUta = data.summary_ref_map;
+            let articles = Object.keys(dam);
+            let optUta: string[] = [];
 
-        for (let j=0; j< articles.length; j++) {
-            // first check to see if this article is in the done list
-            // if so skip it
-            if ( doneArticleMap.has(articles[j]) ) { continue;}
-            optUta.push(articles[j] );
-            let articleCount = dam[articles[j]].total;
-            // now add to map. dups expected
-            doneArticleMap.set(articles[j], articleCount);
+            for (let j=0; j< articles.length; j++) {
+                // first check to see if this article is in the done list
+                // if so skip it
+                if ( doneArticleMap.has(articles[j]) ) { continue;}
+                optUta.push(articles[j] );
+                let articleCount = dam[articles[j]].total;
+                // now add to map. dups expected
+                doneArticleMap.set(articles[j], articleCount);
+            }
+            optUtaMap.set(roundWinnerBook,optUta);
         }
-        optUtaMap.set(roundWinnerBook,optUta);
 
         // get the UTW articles and their counts
-        dbkey = "utw-"+bkid;
-        data = await dbsetup.bpstore.getItem(dbkey);
-        dam = data.detail_article_map;
+        let dbkey = "utw-"+bkid;
+        let data = await dbsetup.bpstore.getItem(dbkey);
+        let dam = data.detail_article_map;
         refmapUtw = data.summary_ref_map;
-        articles = Object.keys(dam);
+        let articles = Object.keys(dam);
         let optUtw: string[] = [];
 
         for (let j=0; j< articles.length; j++) {

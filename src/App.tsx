@@ -591,7 +591,7 @@ export default function App() {
           <div className={classes.alignItemsAndJustifyContent}>
             {(activeStep === 0) && (
               <Grid container spacing={3}>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                   <Paper>
                     <Typography> <br/> </Typography>
                     <div>
@@ -616,7 +616,25 @@ export default function App() {
                     </FormControl>
                   </Paper>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={2}>
+                <Typography> <br/> <br/> <br/> </Typography>
+                  <Paper>
+                  <FormControl required component="fieldset" className={classes.formControl}>
+                    <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox checked={state['Open Bible Stories'][0]} 
+                              onChange={handleChange('Open Bible Stories')} 
+                              value='Open Bible Stories' />
+                          }
+                          label='Open Bible Stories' key='Open Bible Stories'
+                        />
+                    </FormGroup>
+                    <FormHelperText />
+                    </FormControl>
+                  </Paper>
+                </Grid>
+                <Grid item xs={5}>
                   <Paper>
                     <Typography> <br/> </Typography>
                     <div>

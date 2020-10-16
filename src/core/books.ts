@@ -59,6 +59,8 @@ export const bookDataTitles = () => {
   for (let i=0; i < data.length; i++) {
       list.push( data[i].title )
   }
+  // add OBS as a pseudobook
+  list.push('Open Bible Stories');
   return list;
 }
 
@@ -70,6 +72,7 @@ export const titlesToBoolean = () => {
 }
 
 export const bookIdByTitle = (title: string) => {
+  if ( title === 'Open Bible Stories' ) return 'obs';
   for (let i=0; i < data.length; i++) {
     if ( data[i].title === title ) {
       return data[i].id;
