@@ -16,6 +16,10 @@ export function addRow( csvdata: string[][], csvrow: string[]) {
 
     for (let i=0; i < csvrow.length; i++) {
         let cell = csvrow[i];
+        if ( cell.startsWith('"') && cell.endsWith('"') ) {
+            // remove the quotes
+            cell = cell.substring(1, cell.length-1);
+        }
         if ( cell.includes('"') ) {
             // double the quotes
             cell = cell.replace(/"/g,'""');

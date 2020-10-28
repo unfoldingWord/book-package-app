@@ -82,6 +82,7 @@ export const bookIdByTitle = (title: string) => {
 }
 
 export const bookTitleById = (id: string) => {
+  if ( id === 'obs' ) return 'Open Bible Stories';
   for (let i=0; i < data.length; i++) {
     if ( data[i].id === id ) {
       return data[i].title;
