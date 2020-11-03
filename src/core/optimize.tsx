@@ -47,6 +47,9 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     const booksOpt   = bookpkg.filter( function(book) { return !booksDone.includes(book) } );
     console.log("booksOpt:",booksOpt);
 
+    // keep track of the word counts for each article uta or utw
+    let articleCount = new Map<string,number>();
+
     // count words in each book for pre-optimization summary
     let bookCountTotalsPreOpt = new Map<string,number>();
     let bookCountArticleTotalsPreOpt = new Map<string,number>();
@@ -72,6 +75,15 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                     bookCountArticleTotalsPreOpt.set(bkid,rescount)
                 }
             };
+            // get the detailed article map and store counts for later
+            if ( res === 'uta-' || res === 'utw-' ) {
+                const allArticles = Object.keys(data.detail_article_map);
+                for (let articlename of allArticles) {
+                    if ( ! articleCount.has(articlename) ) {
+                        articleCount.set(articlename, data.detail_article_map[articlename].total)
+                    }
+                }
+            }
             if ( bookCountTotalsPreOpt.has(bkid) ) {
                 bookCountTotalsPreOpt.set(bkid, bookCountTotalsPreOpt.get(bkid) + rescount);
             } else {
@@ -79,6 +91,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             }
         }    
     }
+    console.log("articleCount:", articleCount);
 
     /*
         For the books marked as done, compute their word count contribution by:
@@ -376,6 +389,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                                             <Link href={convertUtaToLink(uta)} target="_blank" rel="noopener" >
                                             {uta}
                                             </Link>
+                                            &nbsp;&nbsp;(Word Count: {articleCount.get(uta)})
                                             &nbsp;&nbsp;(References: {refmapUta[uta]})
                                         </Typography>                    
                                     </li>
@@ -396,6 +410,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                                         <Link href={convertUtwToLink(utw)} target="_blank" rel="noopener" >
                                         {utw} 
                                         </Link>
+                                        &nbsp;&nbsp;(Word Count: {articleCount.get(utw)})
                                         &nbsp;&nbsp;(References: {refmapUtw[utw]})
                                     </Typography>                    
                                     </li>
