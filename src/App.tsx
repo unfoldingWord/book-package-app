@@ -38,7 +38,7 @@ import { Container, CssBaseline, Grid } from '@material-ui/core';
 
 import * as dbsetup from 'book-package-rcl';
 
-function download(filename: string, text: string) {
+export function download(filename: string, text: string) {
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
@@ -358,7 +358,14 @@ export default function App() {
     download(fn, data);
   }
 
-  const handleSelectNoneOt = () => {
+  async function handleOptExportSummary() {
+    let data = await dbsetup.bpstore.getItem('optimized-csv-data');
+    let ts = new Date().toISOString();
+    let fn = 'OptimizationFlow-' + ts + '.csv';
+    download(fn, data);
+  }
+
+    const handleSelectNoneOt = () => {
     let states = books.oldTestament();
     for( let i=0; i < states.length; i++) {
       state[states[i]][0] = false;
@@ -582,9 +589,14 @@ export default function App() {
             )}
 
             {activeStep === 3 && (
+              <>
               <Button onClick={handleReset} color="primary" variant="contained" className={classes.button}>
               Start Over
               </Button>
+              <Button onClick={handleOptExportSummary} color="primary" variant="contained" className={classes.button}>
+              Export Optimization
+              </Button>
+              </>
             )}
           </div>
 

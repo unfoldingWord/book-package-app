@@ -9,6 +9,8 @@ import { Link } from '@material-ui/core';
 
 import * as dbsetup from 'book-package-rcl';
 import * as books from './books';
+import * as csv from './csvMaker';
+
 
 export interface bpStateIF { [x: string]: boolean[]; };
 interface ObjectLiteral {
@@ -16,7 +18,7 @@ interface ObjectLiteral {
 } 
 
   
-const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-']
+const resourcePrefixes = ['uta-', 'utw-', 'ult-','ust-', 'utq-', 'utn-', 'obs-']
 
 function convertUtaToLink(lnk: string) {
     const path = 'https://git.door43.org/unfoldingWord/en_ta/src/branch/master/translate/';
@@ -47,6 +49,14 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     const booksOpt   = bookpkg.filter( function(book) { return !booksDone.includes(book) } );
     console.log("booksOpt:",booksOpt);
 
+    // In case the user wants to export the optimized flow to a spreadsheet (CSV)
+    // the data is collected during the optimization. Don't want to do the 
+    // optimization twice!!
+    // Therefore, collect it and store in indexedDB
+    let csvdata: string[][] = [];
+    // add export headers for completed packages section
+    //csv.addRow(csvdata, ['All Packages']);
+
     // keep track of the word counts for each article uta or utw
     let articleCount = new Map<string,number>();
 
@@ -54,6 +64,8 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     let bookCountTotalsPreOpt = new Map<string,number>();
     let bookCountArticleTotalsPreOpt = new Map<string,number>();
     let bklist: string[] = [];
+    // add export headers for completed book packages
+    //csv.addRow(csvdata,['Book', 'Id', 'Resource', 'Word Count', 'Title']);
     for (let bk of bookpkg) {
         let bkid = books.bookIdByTitle(bk);
         bklist.push(bkid);
@@ -62,6 +74,10 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                 if (res === 'uta-' || res === 'ult-' || res === 'ust-' ) {
                     continue; // these resources are not present for OBS
                 }
+            }
+            if ( res === 'obs-' ) {
+                // if resource is obs, then the only "book" is (also) obs
+                if ( bkid !== 'obs' ) continue;
             }
             let dbkey = res+bkid;
             let data = await dbsetup.bpstore.getItem(dbkey);
@@ -75,23 +91,27 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                     bookCountArticleTotalsPreOpt.set(bkid,rescount)
                 }
             };
-            // get the detailed article map and store counts for later
-            if ( res === 'uta-' || res === 'utw-' ) {
-                const allArticles = Object.keys(data.detail_article_map);
-                for (let articlename of allArticles) {
-                    if ( ! articleCount.has(articlename) ) {
-                        articleCount.set(articlename, data.detail_article_map[articlename].total)
-                    }
-                }
-            }
             if ( bookCountTotalsPreOpt.has(bkid) ) {
                 bookCountTotalsPreOpt.set(bkid, bookCountTotalsPreOpt.get(bkid) + rescount);
             } else {
                 bookCountTotalsPreOpt.set(bkid,rescount);
             }
+            // get the detailed article map and store counts for later
+            if ( res === 'uta-' || res === 'utw-' ) {
+                const allArticles = Object.keys(data.detail_article_map);
+                for (let articlename of allArticles) {
+                    if ( ! articleCount.has(articlename) ) {
+                        let articleWordCount = data.detail_article_map[articlename].total;
+                        articleCount.set(articlename, articleWordCount );
+                        //csv.addRow(csvdata,[bk, bkid, res.slice(0, -1), articleWordCount.toLocaleString(), articlename]);
+                    }
+                }
+            } else {
+                //csv.addRow(csvdata, [bk, bkid, res.slice(0, -1), rescount.toLocaleString()]);
+            }
         }    
     }
-    console.log("articleCount:", articleCount);
+    console.log("Pre-optimization computations done");
 
     /*
         For the books marked as done, compute their word count contribution by:
@@ -100,7 +120,13 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         c. Add to that the total word counts for UTQ, UTN, ULT, and UST
         d. This sum total will be the starting point for the book package flow.
     */
+    //csv.addRow(csvdata, [""]);
+    csv.addRow(csvdata, ['Completed Packages']);
+    csv.addRow(csvdata,['Book','BookId','Resource','Word Count','Title'])
+
     let doneGrandTotal = 0;
+    let utaGrandTotal = 0;
+    let utwGrandTotal = 0;
     let doneArticleMap = new Map<string,number>();
     for (let i=0; i < booksDone.length; i++) {
         // get the UTA articles and their counts
@@ -115,7 +141,8 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // now add to map. dups expected
             if ( ! doneArticleMap.has(articles[j])) {
                 doneArticleMap.set(articles[j], articleCount);
-                //console.log(articles[j], articleCount);
+                csv.addRow(csvdata,[booksDone[i], bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
+                utaGrandTotal = utaGrandTotal + articleCount;
             }
         }
 
@@ -129,7 +156,8 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // now add to map. dups expected
             if ( ! doneArticleMap.has(articles[j])) {
                 doneArticleMap.set(articles[j], articleCount);
-                //console.log(articles[j], articleCount);
+                csv.addRow(csvdata,[booksDone[i], bkid, 'utw', articleCount.toLocaleString(), articles[j]])
+                utwGrandTotal = utwGrandTotal + articleCount;
             }
         }
     }
@@ -139,7 +167,6 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         doneGrandTotal = doneGrandTotal + c;
     }
     console.log("done article total is:", doneGrandTotal);
-
     // now add in the UTQ, UTN, ULT, UST for each completed book
     for (let i=0; i < booksDone.length; i++) {
         // get the UTA articles and their counts
@@ -147,23 +174,37 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         let dbkey = "utq-"+bkid;
         let data  = await dbsetup.bpstore.getItem(dbkey);
         let resourceTotal = data.total;
+        csv.addRow(csvdata,[booksDone[i],bkid,'utq',resourceTotal.toLocaleString()])
         doneGrandTotal = doneGrandTotal + resourceTotal;
         dbkey = "utn-"+bkid;
         data  = await dbsetup.bpstore.getItem(dbkey);
         resourceTotal = data.total;
+        csv.addRow(csvdata,[booksDone[i],bkid,'utn',resourceTotal.toLocaleString()])
         doneGrandTotal = doneGrandTotal + resourceTotal;
         if ( bkid !== 'obs') {
             dbkey = "ult-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
             resourceTotal = data.total;
+            csv.addRow(csvdata,[booksDone[i],bkid,'ult',resourceTotal.toLocaleString()])
             doneGrandTotal = doneGrandTotal + resourceTotal;
             dbkey = "ust-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
             resourceTotal = data.total;
+            csv.addRow(csvdata,[booksDone[i],bkid,'ust',resourceTotal.toLocaleString()])
             doneGrandTotal = doneGrandTotal + resourceTotal;
         }
     }
     console.log("Done grand total is:", doneGrandTotal);
+    if ( doneGrandTotal === 0 ) {
+        csv.addRow(csvdata, ['None specified'])
+    } else {
+        csv.addRow(csvdata, [""]);
+        csv.addRow(csvdata, ['UTA Grand Total:', utaGrandTotal.toLocaleString()]);
+        csv.addRow(csvdata, ['UTW Grand Total:', utwGrandTotal.toLocaleString()]);
+        csv.addRow(csvdata, ['Grand Total of Articles', (utaGrandTotal+utwGrandTotal).toLocaleString()])
+        csv.addRow(csvdata,['Grand Total:',doneGrandTotal.toLocaleString()]);
+    }
+
     /*
         The above marks the end of the computation of the books 
         marked as done.
@@ -198,6 +239,10 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     let optUtwMap = new Map<string,string[]>();
     let refmapUta: ObjectLiteral = { };
     let refmapUtw: ObjectLiteral = { };
+    
+    // blank row
+    csv.addRow(csvdata, [""]);
+    csv.addRow(csvdata,['Round', 'Book', 'BookId', 'Resource', 'Word Count', 'Title']);
 
     for (let n=0; n < booksOpt.length; n++ ) {
         round++;
@@ -296,14 +341,41 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         optBooks.push(roundWinnerBook);
         optCounts.push(roundWinnerCount);
         console.log("Round ", round, "winner is ",roundWinnerBook, " with count:", roundWinnerCount);
+
+        // add round winner to optimized export data
+        // get the utq data for the winner
+        let bkid = books.bookIdByTitle(roundWinnerBook);
+        let dbkey = "utq-"+bkid;
+        let data  = await dbsetup.bpstore.getItem(dbkey);
+        csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'utq', data.total.toLocaleString()]);
         
+        // get the utn data for the winner
+        bkid = books.bookIdByTitle(roundWinnerBook);
+        dbkey = "utn-"+bkid;
+        data  = await dbsetup.bpstore.getItem(dbkey);
+        csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'utn', data.total.toLocaleString()]);
+
+        // get the ult, ust data for the winner if not OBS
+        bkid = books.bookIdByTitle(roundWinnerBook);
+        if ( bkid === 'obs' ) {
+            dbkey = "obs-"+bkid;
+            data  = await dbsetup.bpstore.getItem(dbkey);
+            csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'obs', data.total.toLocaleString()]);
+        } else {
+            dbkey = "ult-"+bkid;
+            data  = await dbsetup.bpstore.getItem(dbkey);
+            csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'ult', data.total.toLocaleString()]);
+            dbkey = "ust-"+bkid;
+            data  = await dbsetup.bpstore.getItem(dbkey);
+            csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'ust', data.total.toLocaleString()]);
+        }
+
         /* ------------------------------------------------------------
 
             Now add the winner's UTA and UTW articles to the done list
             these will not be done again in subsequent rounds
 
         */
-        let bkid = books.bookIdByTitle(roundWinnerBook);
         if ( bkid !== 'obs' ) {
             let dbkey = "uta-"+bkid;
             let data = await dbsetup.bpstore.getItem(dbkey);
@@ -320,13 +392,14 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                 let articleCount = dam[articles[j]].total;
                 // now add to map. dups expected
                 doneArticleMap.set(articles[j], articleCount);
+                csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
             }
             optUtaMap.set(roundWinnerBook,optUta);
         }
 
         // get the UTW articles and their counts
-        let dbkey = "utw-"+bkid;
-        let data = await dbsetup.bpstore.getItem(dbkey);
+        dbkey = "utw-"+bkid;
+        data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
         refmapUtw = data.summary_ref_map;
         let articles = Object.keys(dam);
@@ -340,9 +413,11 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             let articleCount = dam[articles[j]].total;
             // now add to map
             doneArticleMap.set(articles[j], articleCount);
+            csv.addRow(csvdata,[round.toLocaleString(), roundWinnerBook, bkid, 'utw', articleCount.toLocaleString(), articles[j]]);
         }
         optUtwMap.set(roundWinnerBook,optUtw);
     }
+    await dbsetup.bpstore.setItem('optimized-csv-data',csv.toCSV(csvdata));
     setOpt (
         <div>
             <br/>
@@ -357,7 +432,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                 {booksDone.map(t => (
                     <li>
                         <Typography key={t}>
-                            {t} (Book Package Word Count: {bookCountTotalsPreOpt.get(books.bookIdByTitle(t))?.toLocaleString()} )
+                            {t} (Book Package Word Count: {bookCountTotalsPreOpt.get(books.bookIdByTitle(t))?.toLocaleString()})
                         </Typography>
                     </li>
                 ))}
