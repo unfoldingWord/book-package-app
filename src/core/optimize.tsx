@@ -129,10 +129,10 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     let utwGrandTotal = 0;
     let doneArticleMap = new Map<string,number>();
     for (let i=0; i < booksDone.length; i++) {
-        // get the UTA articles and their counts
         let bkid = books.bookIdByTitle(booksDone[i]);
-        if ( bkid === 'obs' ) continue; // not used in OBS
-        let dbkey = "uta-"+bkid;
+
+        // get the UTW articles and their counts
+        let dbkey = "utw-"+bkid;
         let data = await dbsetup.bpstore.getItem(dbkey);
         let dam = data.detail_article_map;
         let articles = Object.keys(dam);
@@ -141,13 +141,14 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // now add to map. dups expected
             if ( ! doneArticleMap.has(articles[j])) {
                 doneArticleMap.set(articles[j], articleCount);
-                csv.addRow(csvdata,[booksDone[i], bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
-                utaGrandTotal = utaGrandTotal + articleCount;
+                csv.addRow(csvdata,[booksDone[i], bkid, 'utw', articleCount.toLocaleString(), articles[j]])
+                utwGrandTotal = utwGrandTotal + articleCount;
             }
         }
 
-        // get the UTW articles and their counts
-        dbkey = "utw-"+bkid;
+        // get the UTA articles and their counts
+        if ( bkid === 'obs' ) continue; // not used in OBS
+        dbkey = "uta-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);
         dam = data.detail_article_map;
         articles = Object.keys(dam);
@@ -156,8 +157,8 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             // now add to map. dups expected
             if ( ! doneArticleMap.has(articles[j])) {
                 doneArticleMap.set(articles[j], articleCount);
-                csv.addRow(csvdata,[booksDone[i], bkid, 'utw', articleCount.toLocaleString(), articles[j]])
-                utwGrandTotal = utwGrandTotal + articleCount;
+                csv.addRow(csvdata,[booksDone[i], bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
+                utaGrandTotal = utaGrandTotal + articleCount;
             }
         }
     }
