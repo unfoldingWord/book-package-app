@@ -241,12 +241,13 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
     let refmapUta: ObjectLiteral = { };
     let refmapUtw: ObjectLiteral = { };
     
-    // blank row
-    csv.addRow(csvdata, [""]);
-    csv.addRow(csvdata,['Book', 'BookId', 'Resource', 'Word Count', 'Title', 'Round']);
 
     for (let n=0; n < booksOpt.length; n++ ) {
         round++;
+        // blank row
+        csv.addRow(csvdata, [""]);
+        csv.addRow(csvdata,['Round '+round]);
+        csv.addRow(csvdata,['Book', 'BookId', 'Resource', 'Word Count', 'Title']);
         console.log("Begin round:",round);
         let newBooks: string[] = [];
         let newCounts: number[] = [];
@@ -314,7 +315,11 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             dbkey = "utn-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
             optBookTotal = optBookTotal + data.total;
-            if ( bkid !== 'obs' ) {
+            if ( bkid === 'obs' ) {
+                dbkey = "obs-"+bkid;
+                data  = await dbsetup.bpstore.getItem(dbkey);
+                optBookTotal = optBookTotal + data.total;
+            } else {
                 dbkey = "ult-"+bkid;
                 data  = await dbsetup.bpstore.getItem(dbkey);
                 optBookTotal = optBookTotal + data.total;
@@ -348,27 +353,27 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         let bkid = books.bookIdByTitle(roundWinnerBook);
         let dbkey = "utq-"+bkid;
         let data  = await dbsetup.bpstore.getItem(dbkey);
-        csv.addRow(csvdata,[roundWinnerBook, bkid, 'utq', data.total.toLocaleString(), "", round.toLocaleString()]);
+        csv.addRow(csvdata,[roundWinnerBook, bkid, 'utq', data.total.toLocaleString(), ""]);
         
         // get the utn data for the winner
         bkid = books.bookIdByTitle(roundWinnerBook);
         dbkey = "utn-"+bkid;
         data  = await dbsetup.bpstore.getItem(dbkey);
-        csv.addRow(csvdata,[roundWinnerBook, bkid, 'utn', data.total.toLocaleString(), "", round.toLocaleString()]);
+        csv.addRow(csvdata,[roundWinnerBook, bkid, 'utn', data.total.toLocaleString(), ""]);
 
         // get the ult, ust data for the winner if not OBS
         bkid = books.bookIdByTitle(roundWinnerBook);
         if ( bkid === 'obs' ) {
             dbkey = "obs-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
-            csv.addRow(csvdata,[roundWinnerBook, bkid, 'obs', data.total.toLocaleString(), "", round.toLocaleString()]);
+            csv.addRow(csvdata,[roundWinnerBook, bkid, 'obs', data.total.toLocaleString(), ""]);
         } else {
             dbkey = "ult-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
-            csv.addRow(csvdata,[roundWinnerBook, bkid, 'ult', data.total.toLocaleString(), "", round.toLocaleString()]);
+            csv.addRow(csvdata,[roundWinnerBook, bkid, 'ult', data.total.toLocaleString(), ""]);
             dbkey = "ust-"+bkid;
             data  = await dbsetup.bpstore.getItem(dbkey);
-            csv.addRow(csvdata,[roundWinnerBook, bkid, 'ust', data.total.toLocaleString(), "", round.toLocaleString()]);
+            csv.addRow(csvdata,[roundWinnerBook, bkid, 'ust', data.total.toLocaleString(), ""]);
         }
 
         /* ------------------------------------------------------------
@@ -377,7 +382,9 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             these will not be done again in subsequent rounds
 
         */
-        if ( bkid !== 'obs' ) {
+       let winnerUtaTotal = 0;
+       let winnerUtwTotal = 0;
+       if ( bkid !== 'obs' ) {
             let dbkey = "uta-"+bkid;
             let data = await dbsetup.bpstore.getItem(dbkey);
             let dam = data.detail_article_map;
@@ -393,7 +400,8 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
                 let articleCount = dam[articles[j]].total;
                 // now add to map. dups expected
                 doneArticleMap.set(articles[j], articleCount);
-                csv.addRow(csvdata,[roundWinnerBook, bkid, 'uta', articleCount.toLocaleString(), articles[j], round.toLocaleString(), ]);
+                csv.addRow(csvdata,[roundWinnerBook, bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
+                winnerUtaTotal = winnerUtaTotal + articleCount;
             }
             optUtaMap.set(roundWinnerBook,optUta);
         }
@@ -414,9 +422,18 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             let articleCount = dam[articles[j]].total;
             // now add to map
             doneArticleMap.set(articles[j], articleCount);
-            csv.addRow(csvdata,[roundWinnerBook, bkid, 'utw', articleCount.toLocaleString(), articles[j], round.toLocaleString()]);
+            csv.addRow(csvdata,[roundWinnerBook, bkid, 'utw', articleCount.toLocaleString(), articles[j]]);
+            winnerUtwTotal = winnerUtwTotal + articleCount;
         }
         optUtwMap.set(roundWinnerBook,optUtw);
+        // blank row to csv and show uta and utw total for round
+        csv.addRow(csvdata,['']);
+        // total for uta to csv
+        csv.addRow(csvdata,['Round '+round+' UTA:', winnerUtaTotal.toLocaleString()])
+        // total for utw to csv
+        csv.addRow(csvdata,['Round '+round+' UTW:', winnerUtwTotal.toLocaleString()])
+        // Round x total
+        csv.addRow(csvdata,['Round '+round+' Total:', roundWinnerCount.toLocaleString()])
     }
     await dbsetup.bpstore.setItem('optimized-csv-data',csv.toCSV(csvdata));
     setOpt (
