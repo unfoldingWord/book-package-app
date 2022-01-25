@@ -2876,10 +2876,10 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-book-package-rcl@1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.6.1.tgz#f39b35985a9fa054c46e0a85e09ddf4574a8ae44"
-  integrity sha512-KLlGFC6on8kLrI80cXBhy5LF6bpmStHIUV1SmQOqOkZZxmd98tvn15X1csEgsvSn/3A9zto12KYnEjDNlcyWhg==
+book-package-rcl@1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.6.3.tgz#0ac28b8d1a1aa4e6ef5e402da8e7e9c1b258b358"
+  integrity sha512-EoFpGvyP/WnJw/17uF660HJi0sPn3rBD/JVcBeGp+WHZ2CJ3+ejHWDlnlVXCA1mtuADr454OdzPXJMjvXZ8HIQ==
   dependencies:
     "@date-io/core" "^1.3.6"
     "@material-ui/core" "^4.9.4"

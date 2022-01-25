@@ -21,7 +21,7 @@ export async function exportCounts( state: bpStateIF ): Promise<any> {
     const bookpkg = allbooks.filter( function(book) { return state[book][0] } );
     console.log("bookpkg:",bookpkg);
     let csvdata: string[][] = [];
-    let row = ['book','ult','ust','utn','utq','utw','uta'];
+    let row = ['book','ult','ust','utn','utq','utw','uta','obs'];
     csv.addRow(csvdata,row);
 
     let ult = "";
@@ -30,21 +30,29 @@ export async function exportCounts( state: bpStateIF ): Promise<any> {
     let utq = "";
     let utw = "";
     let uta = "";
-for (let bk of bookpkg) {
+    let obs = "";
+    for (let bk of bookpkg) {
         let bkid = books.bookIdByTitle(bk);
         // define vars for the columns vals
+        let dbkey: string
+        let data: any
+        let rescount: number
 
         // get the count for the book resources
-        let dbkey = "ult-" + bkid;
-        let data = await dbsetup.bpstore.getItem(dbkey);
-        let rescount = data.total;
-        ult = rescount.toLocaleString();
+        if ( bkid !== 'obs' ) {
+            dbkey = "ult-" + bkid;
+            data = await dbsetup.bpstore.getItem(dbkey);
+            rescount = data.total;
+            ult = rescount.toLocaleString();
+        }
 
         // get the count for the book resources
-        dbkey = "ust-" + bkid;
-        data = await dbsetup.bpstore.getItem(dbkey);
-        rescount = data.total;
-        ust = rescount.toLocaleString();
+        if ( bkid !== 'obs' ) {
+            dbkey = "ust-" + bkid;
+            data = await dbsetup.bpstore.getItem(dbkey);
+            rescount = data.total;
+            ust = rescount.toLocaleString();
+        }
 
         // get the count for the book resources
         dbkey = "utn-" + bkid;
@@ -70,7 +78,13 @@ for (let bk of bookpkg) {
         rescount = data.grandTotalWordCount; // note diff!
         uta = rescount.toLocaleString();
 
-        row = [bkid,ult,ust,utn,utq,utw,uta];
+        // for obs
+        dbkey = "obs-obs";
+        data = await dbsetup.bpstore.getItem(dbkey);
+        rescount = data.total;
+        obs = rescount.toLocaleString();
+
+        row = [bkid,ult,ust,utn,utq,utw,uta,obs];
         csv.addRow(csvdata,row);
     }
 
