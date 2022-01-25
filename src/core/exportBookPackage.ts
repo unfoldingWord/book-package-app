@@ -146,7 +146,7 @@ export async function exportBookPackage( state: bpStateIF ): Promise<any> {
         }
 
         // skip if OBS
-        if ( bkid === 'obs' ) continue;
+        //if ( bkid === 'obs' ) continue;
 
         dbkey = "uta-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);

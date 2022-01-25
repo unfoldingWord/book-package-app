@@ -71,7 +71,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         bklist.push(bkid);
         for (let res of resourcePrefixes) {
             if ( bkid === 'obs' ) {
-                if (res === 'uta-' || res === 'ult-' || res === 'ust-' ) {
+                if (res === 'ult-' || res === 'ust-' ) {
                     continue; // these resources are not present for OBS
                 }
             }
@@ -147,7 +147,7 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
         }
 
         // get the UTA articles and their counts
-        if ( bkid === 'obs' ) continue; // not used in OBS
+        //if ( bkid === 'obs' ) continue; // not used in OBS
         dbkey = "uta-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);
         dam = data.detail_article_map;
@@ -265,24 +265,22 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             let dam: ObjectLiteral = {};
             let optArticleMap = new Map<string,number>();
             let bkid = books.bookIdByTitle(booksOpt[i]);
-            if ( bkid !== 'obs' ) {
-                let dbkey = "uta-"+bkid;
-                let data = await dbsetup.bpstore.getItem(dbkey);
-                let dam = data.detail_article_map;
-                articles = Object.keys(dam);
+            dbkey = "uta-"+bkid;
+            data = await dbsetup.bpstore.getItem(dbkey);
+            dam = data.detail_article_map;
+            articles = Object.keys(dam);
 
-                // dedup the articles for this book
-                // using the article map below
+            // dedup the articles for this book
+            // using the article map below
 
-                for (let j=0; j< articles.length; j++) {
-                    // first check to see if this article is in the done list
-                    // if so skip it
-                    if ( doneArticleMap.has(articles[j]) ) { continue;}
-                    let articleCount = dam[articles[j]].total;
-                    // now add to map. dups expected
-                    optArticleMap.set(articles[j], articleCount);
-                    //console.log(articles[j], articleCount);
-                }
+            for (let j=0; j< articles.length; j++) {
+                // first check to see if this article is in the done list
+                // if so skip it
+                if ( doneArticleMap.has(articles[j]) ) { continue;}
+                let articleCount = dam[articles[j]].total;
+                // now add to map. dups expected
+                optArticleMap.set(articles[j], articleCount);
+                //console.log(articles[j], articleCount);
             }
 
             // get the UTW articles and their counts
@@ -382,36 +380,35 @@ export async function optimize(state: bpStateIF, setOpt: React.Dispatch<React.Se
             these will not be done again in subsequent rounds
 
         */
-       let winnerUtaTotal = 0;
-       let winnerUtwTotal = 0;
-       if ( bkid !== 'obs' ) {
-            let dbkey = "uta-"+bkid;
-            let data = await dbsetup.bpstore.getItem(dbkey);
-            let dam = data.detail_article_map;
-            refmapUta = data.summary_ref_map;
-            let articles = Object.keys(dam);
-            let optUta: string[] = [];
+        let winnerUtaTotal = 0;
+        let winnerUtwTotal = 0;
 
-            for (let j=0; j< articles.length; j++) {
-                // first check to see if this article is in the done list
-                // if so skip it
-                if ( doneArticleMap.has(articles[j]) ) { continue;}
-                optUta.push(articles[j] );
-                let articleCount = dam[articles[j]].total;
-                // now add to map. dups expected
-                doneArticleMap.set(articles[j], articleCount);
-                csv.addRow(csvdata,[roundWinnerBook, bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
-                winnerUtaTotal = winnerUtaTotal + articleCount;
-            }
-            optUtaMap.set(roundWinnerBook,optUta);
+        dbkey = "uta-"+bkid;
+        data = await dbsetup.bpstore.getItem(dbkey);
+        let dam = data.detail_article_map;
+        refmapUta = data.summary_ref_map;
+        let articles = Object.keys(dam);
+        let optUta: string[] = [];
+
+        for (let j=0; j< articles.length; j++) {
+            // first check to see if this article is in the done list
+            // if so skip it
+            if ( doneArticleMap.has(articles[j]) ) { continue;}
+            optUta.push(articles[j] );
+            let articleCount = dam[articles[j]].total;
+            // now add to map. dups expected
+            doneArticleMap.set(articles[j], articleCount);
+            csv.addRow(csvdata,[roundWinnerBook, bkid, 'uta', articleCount.toLocaleString(), articles[j]]);
+            winnerUtaTotal = winnerUtaTotal + articleCount;
         }
+        optUtaMap.set(roundWinnerBook,optUta);
 
         // get the UTW articles and their counts
         dbkey = "utw-"+bkid;
         data = await dbsetup.bpstore.getItem(dbkey);
-        let dam = data.detail_article_map;
+        dam = data.detail_article_map;
         refmapUtw = data.summary_ref_map;
-        let articles = Object.keys(dam);
+        articles = Object.keys(dam);
         let optUtw: string[] = [];
 
         for (let j=0; j< articles.length; j++) {
