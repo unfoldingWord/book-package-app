@@ -2876,10 +2876,10 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-book-package-rcl@1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.6.3.tgz#0ac28b8d1a1aa4e6ef5e402da8e7e9c1b258b358"
-  integrity sha512-EoFpGvyP/WnJw/17uF660HJi0sPn3rBD/JVcBeGp+WHZ2CJ3+ejHWDlnlVXCA1mtuADr454OdzPXJMjvXZ8HIQ==
+book-package-rcl@1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/book-package-rcl/-/book-package-rcl-1.7.0.tgz#215ac5d0145770de507d09a958728372480f6a5f"
+  integrity sha512-iGHQoDvfkoMGnUkOzi5Jq9qO9+LAeOf1CpGCHH9bUaTHE0a2Fn31b8CE8ywrntpBY90YIx3+8T3PhyvoESzSxQ==
   dependencies:
     "@date-io/core" "^1.3.6"
     "@material-ui/core" "^4.9.4"
@@ -3283,11 +3283,6 @@ caniuse-api@^3.0.0:
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30000989, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001135:
   version "1.0.30001301"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz"
-  integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
-
-caniuse-lite@^1.0.30001301:
-  version "1.0.30001301"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz#ebc9086026534cab0dab99425d9c3b4425e5f450"
   integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
 
 canvg@^3.0.6:
